@@ -1,0 +1,19 @@
+<view class="detail-tab-bar">
+  <view class="detail-tab-bar__inner safe-bottom">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="detail-tab-bar__item {{selectedPath === item.pagePath ? 'detail-tab-bar__item--active' : ''}}"
+      bindtap="handleTabTap"
+      data-path="{{item.pagePath}}"
+    >
+      <image
+        wx:if="{{item.icon || item.active_icon}}"
+        class="detail-tab-bar__icon"
+        src="{{selectedPath === item.pagePath ? item.active_icon : item.icon}}"
+        mode="aspectFit"
+      />
+      <text class="detail-tab-bar__text">{{item.text}}</text>
+    </view>
+  </view>
+</view>

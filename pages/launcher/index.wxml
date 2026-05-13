@@ -1,0 +1,20 @@
+<view class="launcher-page">
+  <view class="launcher-page__orb launcher-page__orb--primary"></view>
+  <view class="launcher-page__orb launcher-page__orb--secondary"></view>
+  <view class="launcher-page__orb launcher-page__orb--tertiary"></view>
+
+  <view class="launcher-page__card">
+    <view class="launcher-page__loader">
+      <view class="launcher-page__loader-ring"></view>
+      <view class="launcher-page__loader-core"></view>
+    </view>
+
+    <view class="launcher-page__title">正在进入小程序...</view>
+
+    <view class="launcher-page__bars">
+      <view class="launcher-page__bar launcher-page__bar--one"></view>
+      <view class="launcher-page__bar launcher-page__bar--two"></view>
+      <view class="launcher-page__bar launcher-page__bar--three"></view>
+    </view>
+  </view>
+</view>

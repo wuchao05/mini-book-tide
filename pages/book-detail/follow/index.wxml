@@ -1,0 +1,39 @@
+<ashell-fallback wx:if="{{__ashellFallback}}" />
+<view wx:if="{{__shellReady}}" class="follow-page" style="background: {{pageBackground}};">
+  <view wx:if="{{loading}}" class="follow-loading">加载中...</view>
+
+  <view class="follow-content">
+    <empty-state
+      wx:if="{{!loading && !contentList.length}}"
+      icon="{{emptyState.icon}}"
+      title="{{emptyState.title}}"
+      description="{{emptyState.description}}"
+      show-button="{{true}}"
+      button-text="{{emptyState.action_text}}"
+      bindaction="goToTheater"
+    />
+
+    <block wx:elif="{{contentList.length}}">
+      <view wx:for="{{contentList}}" wx:key="index" class="follow-item" bindtap="handleItemTap" data-id="{{item.album_id}}">
+        <view class="follow-item__cover-wrap">
+          <image class="follow-item__cover" src="{{item.cover}}" mode="aspectFill"></image>
+          <text class="follow-item__tag">{{item.update_status === 2 ? listConfig.finished_text : listConfig.updating_text}}</text>
+        </view>
+        <view class="follow-item__content">
+          <view class="follow-item__title">{{item.title}}</view>
+          <view class="follow-item__update">{{item.update_text}}</view>
+          <view class="follow-item__footer">
+            <view class="follow-item__progress">
+              <image wx:if="{{listConfig.progress_icon}}" class="follow-item__progress-icon" src="{{listConfig.progress_icon}}" mode="aspectFit"></image>
+              <text>{{item.watch_progress || listConfig.default_progress_text}}</text>
+            </view>
+            <view class="follow-item__button">{{listConfig.history_action_text}}</view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{loadingMore}}" class="follow-loading-more">加载中...</view>
+    </block>
+  </view>
+
+  <detail-tab-bar tabs="{{tabBarItems}}" />
+</view>

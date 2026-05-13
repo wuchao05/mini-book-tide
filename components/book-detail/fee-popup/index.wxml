@@ -1,0 +1,9 @@
+<view wx:if="{{visible}}" class="fee-popup-mask">
+  <view class="fee-popup">
+    <view class="fee-popup__title">{{(config && config.title) || '付费须知'}}</view>
+    <view class="fee-popup__body">
+      <view wx:for="{{noticeList}}" wx:key="index" class="fee-popup__item">{{item}}</view>
+    </view>
+    <view class="fee-popup__btn" bindtap="handleClose">{{(config && config.confirm_text) || '我已知晓'}}</view>
+  </view>
+</view>

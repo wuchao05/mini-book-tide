@@ -1,0 +1,11 @@
+.customer-button {
+  width: auto;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+}
+
+.customer-button::after {
+  border: 0;
+}

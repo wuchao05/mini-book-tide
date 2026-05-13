@@ -1,0 +1,6 @@
+.load-more {
+  padding: 32rpx 0 48rpx;
+  font-size: 24rpx;
+  color: #696d78;
+  text-align: center;
+}

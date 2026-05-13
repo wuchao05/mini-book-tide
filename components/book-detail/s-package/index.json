@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "fee-popup": "/components/book-detail/fee-popup/index"
+  }
+}

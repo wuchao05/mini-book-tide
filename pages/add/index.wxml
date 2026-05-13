@@ -1,0 +1,76 @@
+<view class="page-shell add-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">记一笔</view>
+  </view>
+
+  <view class="card form-card rise-card" style="animation-delay: 0.06s;">
+    <view class="preview-card {{type === 'income' ? 'preview-income' : 'preview-expense'}}">
+      <text class="preview-label">当前记录</text>
+      <text class="preview-amount {{type === 'income' ? 'amount-income' : 'amount-expense'}}">{{amount || '0.00'}}</text>
+      <text class="preview-meta">{{type === 'income' ? '收入' : '支出'}} · {{category}} · {{date}}</text>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">收支类型</view>
+      <view class="type-row">
+        <view
+          wx:for="{{typeTabs}}"
+          wx:key="value"
+          class="type-chip {{type === item.value ? 'type-chip-active' : ''}}"
+          data-type="{{item.value}}"
+          hover-class="chip-hover"
+          bindtap="handleTypeChange"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">分类</view>
+      <view class="chip-row">
+        <view
+          wx:for="{{categoryMap[type]}}"
+          wx:key="*this"
+          class="chip {{category === item ? 'chip-active' : ''}}"
+          data-category="{{item}}"
+          hover-class="chip-hover"
+          bindtap="handleCategoryChange"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">金额</view>
+      <view class="input-shell amount-shell">
+        <text class="prefix-symbol {{type === 'income' ? 'amount-income' : 'amount-expense'}}">¥</text>
+        <input class="field-input amount-input" type="digit" placeholder="请输入金额" value="{{amount}}" bindinput="handleAmountInput" />
+      </view>
+    </view>
+
+    <view class="form-block two-column-block">
+      <view class="form-half">
+        <view class="field-label">备注</view>
+        <view class="input-shell">
+          <input class="field-input" maxlength="30" placeholder="用途说明" value="{{note}}" bindinput="handleNoteInput" />
+        </view>
+      </view>
+      <view class="form-half">
+        <view class="field-label">日期</view>
+        <picker mode="date" value="{{date}}" bindchange="handleDateChange">
+          <view class="input-shell picker-shell">
+            <text>{{date}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <button class="button-reset primary-button submit-button" hover-class="button-hover" bindtap="submitBill">保存账单</button>
+  </view>
+</view>

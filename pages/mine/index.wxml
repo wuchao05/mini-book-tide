@@ -1,0 +1,45 @@
+<view class="page-shell mine-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">我的</view>
+  </view>
+
+  <view class="card profile-card rise-card" style="animation-delay: 0.06s;">
+    <view class="profile-top">
+      <view class="profile-title">{{appName}}</view>
+      <view class="profile-mark">BOOK</view>
+    </view>
+    <view class="profile-grid">
+      <view class="profile-item">
+        <text class="profile-label">累计收入</text>
+        <text class="profile-value amount-income">+{{summary.income}}</text>
+      </view>
+      <view class="profile-item">
+        <text class="profile-label">累计支出</text>
+        <text class="profile-value amount-expense">-{{summary.expense}}</text>
+      </view>
+      <view class="profile-item profile-item-wide">
+        <text class="profile-label">账单总数</text>
+        <text class="profile-value">{{summary.count}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-group rise-card" style="animation-delay: 0.12s;">
+    <view
+      wx:for="{{menuList}}"
+      wx:key="title"
+      class="card menu-item"
+      data-url="{{item.url}}"
+      bindtap="goPage"
+      hover-class="chip-hover"
+    >
+      <view class="menu-tag">{{item.tag}}</view>
+      <view class="menu-title">{{item.title}}</view>
+      <view class="menu-arrow">进入</view>
+    </view>
+  </view>
+</view>

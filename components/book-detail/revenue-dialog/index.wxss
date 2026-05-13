@@ -1,0 +1,99 @@
+.revenue-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.revenue-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 22, 32, 0.82);
+}
+
+.revenue-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 690rpx;
+  transform: translate(-50%, -50%);
+}
+
+.revenue-bg {
+  width: 690rpx;
+}
+
+.revenue-close {
+  position: absolute;
+  top: 24rpx;
+  left: 38rpx;
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.revenue-list {
+  position: absolute;
+  top: 120rpx;
+  right: 46rpx;
+  bottom: 52rpx;
+  left: 46rpx;
+}
+
+.revenue-first,
+.revenue-item {
+  display: flex;
+}
+
+.revenue-first {
+  margin-bottom: 26rpx;
+}
+
+.revenue-first__cover {
+  width: 190rpx;
+  height: 286rpx;
+  border-radius: 20rpx;
+}
+
+.revenue-first__info {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.revenue-title {
+  overflow: hidden;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.revenue-update {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.revenue-enter {
+  width: 300rpx;
+  margin-top: 30rpx;
+}
+
+.revenue-item {
+  margin-top: 28rpx;
+}
+
+.revenue-item__cover {
+  width: 122rpx;
+  height: 182rpx;
+  border-radius: 16rpx;
+}
+
+.revenue-item__info {
+  flex: 1;
+  margin-left: 22rpx;
+}
+
+.revenue-play {
+  width: 180rpx;
+  margin-top: 18rpx;
+}

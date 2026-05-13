@@ -1,0 +1,105 @@
+.profile-card {
+  padding: 28rpx;
+}
+
+.profile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.profile-title {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.profile-mark {
+  min-width: 120rpx;
+  padding: 16rpx 18rpx;
+  border-radius: 22rpx;
+  text-align: center;
+  font-size: 20rpx;
+  color: var(--brand);
+  background: rgba(38, 93, 255, 0.1);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.profile-item {
+  padding: 22rpx;
+  border-radius: 22rpx;
+  background: rgba(247, 249, 255, 0.92);
+}
+
+.profile-item-wide {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(234, 240, 255, 0.9) 0%, rgba(255, 240, 231, 0.96) 100%);
+}
+
+.profile-label {
+  display: block;
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+.profile-value {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.menu-group {
+  margin-top: 22rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.menu-item {
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.menu-tag {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(135deg, rgba(38, 93, 255, 0.12) 0%, rgba(255, 139, 92, 0.14) 100%);
+  color: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.menu-title {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.menu-arrow {
+  font-size: 24rpx;
+  color: var(--brand);
+}
+
+@media (max-width: 375px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-item-wide {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,7 @@
+@import "../recharge/index.wxss";
+
+.record-card__minus {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ff5934;
+}

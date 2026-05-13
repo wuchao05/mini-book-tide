@@ -1,0 +1,84 @@
+<view wx:if="{{visible}}" class="package-root {{embedded ? 'package-root--embedded' : ''}} {{source === 'webview' ? 'package-root--webview' : 'package-root--mine'}}">
+  <view wx:if="{{!embedded}}" class="package-mask" bindtap="handleMaskTap"></view>
+
+  <view class="package-panel {{embedded ? 'package-panel--embedded' : ''}}">
+    <view wx:if="{{!embedded}}" class="package-handle"></view>
+
+    <view class="package-close" bindtap="close">
+      <text class="package-close__icon">×</text>
+    </view>
+
+    <view class="package-stage">
+      <view class="package-stage__glow package-stage__glow--left"></view>
+      <view class="package-stage__glow package-stage__glow--right"></view>
+
+      <view class="package-stage__header">
+        <view class="package-stage__eyebrow">K币充值</view>
+        <view class="package-stage__title">{{tempTitle || shellDefaultTitle || defaultTitle}}</view>
+      </view>
+
+      <view class="package-summary">
+        <block wx:if="{{source === 'mine'}}">
+          <view class="package-summary__item">
+            <view class="package-summary__label">当前余额</view>
+            <view class="package-summary__value">{{balance || 0}} K币</view>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="package-summary__item">
+            <view class="package-summary__label">解锁本集</view>
+            <view class="package-summary__value">{{needCoin || 0}} K币</view>
+          </view>
+          <view class="package-summary__divider"></view>
+          <view class="package-summary__item">
+            <view class="package-summary__label">当前余额</view>
+            <view class="package-summary__value">{{balance || 0}} K币</view>
+          </view>
+        </block>
+      </view>
+
+      <scroll-view scroll-y class="package-scroll" enhanced show-scrollbar="{{false}}">
+        <view wx:if="{{!packageList.length}}" class="package-empty">{{(shellConfig && shellConfig.empty_package_text) || '暂无可购买套餐'}}</view>
+        <view wx:else class="package-grid">
+          <view
+            wx:for="{{packageList}}"
+            wx:key="id"
+            class="package-card {{item.is_highlight && item.is_highlight != 0 ? 'package-card--featured' : ''}} {{item.is_breath && item.is_breath != 0 ? 'package-card--pulse' : ''}} {{checkedPackageId == item.id ? 'package-card--checked' : ''}}"
+            bindtap="handleSelect"
+            data-id="{{item.id}}"
+          >
+            <view wx:if="{{item.corner_mark}}" class="package-card__ribbon {{item.bg_color == 2 ? 'package-card__ribbon--gold' : ''}}">
+              {{item.corner_mark}}
+            </view>
+
+            <view class="package-card__body">
+              <view class="package-card__price-row">
+                <text wx:if="{{chargeUnitSymbol === '¥'}}" class="package-card__currency">{{chargeUnitSymbol}}</text>
+                <text class="package-card__price">{{item.price}}</text>
+                <text wx:if="{{chargeUnitSymbol !== '¥'}}" class="package-card__currency package-card__currency--suffix">{{chargeUnitSymbol}}</text>
+              </view>
+              <view wx:if="{{item.sub_title}}" class="package-card__sub-title">{{item.sub_title}}</view>
+              <view wx:if="{{item.title}}" class="package-card__title">{{item.title}}</view>
+            </view>
+
+            <image
+              wx:if="{{item.is_hand && item.is_hand != 0}}"
+              class="package-card__gesture"
+              src="{{(shellConfig && shellConfig.gesture_icon) || '/assets/book-detail/pay_dialog/isGesture.png'}}"
+              mode="aspectFit"
+            ></image>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="package-footer">
+      <view class="package-footer__tips" bindtap="showFeePopup">
+        <text>{{(shellConfig && shellConfig.fee_notice_prefix_text) || '支付前请阅读'}}</text>
+        <text class="package-footer__tips-text">{{(shellConfig && shellConfig.fee_notice_link_text) || '《付费须知》'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <fee-popup visible="{{feePopupVisible}}" config="{{shellConfig && shellConfig.fee_notice}}" bindclose="closeFeePopup"></fee-popup>
+</view>

@@ -1,0 +1,71 @@
+.record-page {
+  min-height: 100vh;
+  padding: 20rpx;
+  background: #f8f8fa;
+}
+
+.record-card {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+}
+
+.record-card__icon {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.record-card__body {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  margin-left: 24rpx;
+}
+
+.record-card__title,
+.record-card__price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #121620;
+}
+
+.record-card__time,
+.record-card__sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #9fa3ae;
+}
+
+.record-card__price-wrap {
+  margin-left: 40rpx;
+  text-align: right;
+}
+
+.float-customer {
+  position: fixed;
+  right: 30rpx;
+  bottom: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height: 100rpx;
+  background: #ffffff;
+  border-radius: 100rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+}
+
+.float-customer__icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.float-customer__text {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  color: #333333;
+}

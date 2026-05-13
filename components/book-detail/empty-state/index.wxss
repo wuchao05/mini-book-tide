@@ -1,0 +1,38 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  text-align: center;
+}
+
+.empty-state__icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-state__title {
+  margin-bottom: 12rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #121620;
+}
+
+.empty-state__desc {
+  font-size: 28rpx;
+  color: #9fa3ae;
+}
+
+.empty-state__button {
+  min-width: 260rpx;
+  height: 88rpx;
+  padding: 0 36rpx;
+  margin-top: 40rpx;
+  font-size: 30rpx;
+  line-height: 88rpx;
+  color: #ffffff;
+  background: linear-gradient(107deg, #ff5934 2%, #ffc700 100%);
+  border-radius: 20rpx;
+}

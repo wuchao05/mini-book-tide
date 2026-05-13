@@ -1,0 +1,90 @@
+<wxs module="radarUtils" src="./radar-utils.wxs" />
+
+<view class="player-wrapper">
+  <view class="top-bar" catchtap="noop">
+    <view class="back-btn" catchtap="handleBack">
+      <image class="back-icon" src="/assets/book-detail/radar/custom-navbar-back.png" mode="aspectFit" />
+    </view>
+    <view class="placeholder"></view>
+  </view>
+
+  <swiper
+    id="video-swiper"
+    class="video-swiper"
+    style="z-index: 10; transition-duration: 350ms;"
+    vertical
+    current="{{currentIndex}}"
+    duration="350"
+    bindchange="onSwiperChange"
+    bindtransitionend="onSwiperTransitionEnd"
+  >
+    <swiper-item wx:for="{{episodes}}" wx:key="index" item-id="episode_{{index}}">
+      <view class="video-slide" catchtap="onVideoTap">
+        <block wx:if="{{item.lock_status == 0}}">
+          <block wx:if="{{radarUtils.isInRenderWindow(index, currentIndex, episodes.length)}}">
+            <video
+              class="video-player {{currentIndex !== index ? 'video-hidden' : ''}}"
+              id="player_video_{{index}}"
+              data-index="{{index}}"
+              src="{{radarUtils.shouldLoadVideo(index, currentIndex, episodes.length) && item.lock_status == 0 ? (item.transcoded_urls && item.transcoded_urls[0] ? item.transcoded_urls[0].url : item.video_url) : ''}}"
+              poster="{{item.cover || episodeDetail.cover}}"
+              enable-danmu="false"
+              controls="{{false}}"
+              show-center-play-btn="{{false}}"
+              show-play-btn="{{false}}"
+              show-fullscreen-btn="{{false}}"
+              show-progress="{{false}}"
+              enable-progress-gesture="{{false}}"
+              object-fit="{{objectFit}}"
+              enable-play-gesture="{{false}}"
+              bindplay="onPlay"
+              bindpause="onPause"
+              bindended="onEnded"
+              bindtimeupdate="onTimeUpdate"
+              bindwaiting="onWaiting"
+              binderror="onError"
+              bindloadedmetadata="onLoadedMetadata"
+              bindseekcomplete="onSeeked"
+            />
+          </block>
+          <block wx:else>
+            <image class="video-cover" src="{{item.cover || episodeDetail.cover}}" mode="aspectFill" />
+          </block>
+        </block>
+
+        <block wx:else>
+          <image class="video-cover" src="{{item.cover || episodeDetail.cover}}" mode="aspectFill" />
+        </block>
+
+        <view class="center-play-btn" wx:if="{{currentIndex === index && item.lock_status == 0 && !isPlaying && showControls}}" catchtap="onVideoTap">
+          <image class="play-icon" src="/assets/book-detail/radar/scan.png" mode="aspectFit" />
+        </view>
+
+        <view class="player-control-bar" wx:if="{{currentIndex === index && showControls}}" catchtap="noop">
+          <view class="control-bottom">
+            <view class="time-row">
+              <text class="time-text">{{formattedCurrentTime}}</text>
+              <view class="time-sep">/</view>
+              <text class="time-text">{{formattedDuration}}</text>
+            </view>
+            <view class="episode-tag">第{{currentIndex + 1}}集</view>
+          </view>
+
+          <view class="progress-area">
+            <slider
+              class="progress-slider"
+              min="0"
+              max="100"
+              block-size="12"
+              value="{{progressPercent}}"
+              active-color="#ffffff"
+              background-color="rgba(255,255,255,0.3)"
+              bindchange="onSliderChange"
+              bindchanging="onSliderChanging"
+            />
+          </view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+</view>

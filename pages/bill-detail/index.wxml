@@ -1,0 +1,53 @@
+<view class="page-shell detail-page">
+  <view wx:if="{{bill}}">
+    <view class="page-hero rise-card">
+      <view class="hero-backdrop">
+        <view class="hero-orb hero-orb-primary"></view>
+        <view class="hero-orb hero-orb-secondary"></view>
+      </view>
+      <view class="page-title">{{bill.category}}</view>
+    </view>
+
+    <view class="card amount-card rise-card" style="animation-delay: 0.06s;">
+      <text class="amount-label">账单金额</text>
+      <text class="amount-value {{bill.type === 'income' ? 'amount-income' : 'amount-expense'}}">{{bill.type === 'income' ? '+' : '-'}}{{bill.amount}}</text>
+    </view>
+
+    <view class="card info-card rise-card" style="animation-delay: 0.12s;">
+      <view class="info-row">
+        <text class="info-key">分类</text>
+        <text class="info-value">{{bill.category}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-key">类型</text>
+        <text class="info-value">{{bill.typeText}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-key">日期</text>
+        <text class="info-value">{{bill.dateText}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-key">备注</text>
+        <text class="info-value">{{bill.note}}</text>
+      </view>
+    </view>
+
+    <view class="detail-actions rise-card" style="animation-delay: 0.18s;">
+      <button class="button-reset outline-button" hover-class="button-hover" bindtap="goBack">返回上一页</button>
+      <button class="button-reset primary-button" hover-class="button-hover" bindtap="goManage">打开管理页</button>
+    </view>
+  </view>
+
+  <view wx:else class="card empty-box rise-card">
+    <view class="empty-orbit">
+      <view class="empty-wave"></view>
+      <view class="empty-wave-small"></view>
+      <view class="empty-card">
+        <view class="empty-line"></view>
+        <view class="empty-line empty-line-short"></view>
+      </view>
+    </view>
+    <view class="empty-title">未找到对应账单</view>
+    <button class="button-reset primary-button empty-button" hover-class="button-hover" bindtap="goManage">前往管理页</button>
+  </view>
+</view>

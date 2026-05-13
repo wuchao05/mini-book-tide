@@ -1,0 +1,25 @@
+<view wx:if="{{visible}}" class="revenue-dialog">
+  <view class="revenue-mask" bindtap="handleClose"></view>
+  <view class="revenue-content">
+    <image class="revenue-bg" src="{{(config && config.bg_image) || '/assets/book-detail/revenue_bg.png'}}" mode="widthFix"></image>
+    <image class="revenue-close" src="{{(config && config.close_icon) || '/assets/book-detail/free_dialog/close_icon.png'}}" mode="aspectFit" bindtap="handleClose"></image>
+    <scroll-view scroll-y class="revenue-list">
+      <view wx:if="{{firstDrama}}" class="revenue-first" bindtap="handlePlay" data-id="{{firstDrama.id}}">
+        <image class="revenue-first__cover" src="{{firstDrama.cover}}" mode="aspectFill"></image>
+        <view class="revenue-first__info">
+          <view class="revenue-title">{{firstDrama.title}}</view>
+          <view class="revenue-update">{{firstDrama.update_text}}</view>
+          <image class="revenue-enter" src="{{(config && config.enter_button_image) || '/assets/book-detail/revenue_enter_btn.png'}}" mode="widthFix"></image>
+        </view>
+      </view>
+      <view wx:for="{{restDramas}}" wx:key="id" class="revenue-item" bindtap="handlePlay" data-id="{{item.id}}">
+        <image class="revenue-item__cover" src="{{item.cover}}" mode="aspectFill"></image>
+        <view class="revenue-item__info">
+          <view class="revenue-title">{{item.title}}</view>
+          <view class="revenue-update">{{item.update_text}}</view>
+          <image class="revenue-play" src="{{(config && config.play_button_image) || '/assets/book-detail/revenue_play_btn.png'}}" mode="widthFix"></image>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

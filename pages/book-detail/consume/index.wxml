@@ -1,0 +1,28 @@
+<ashell-fallback wx:if="{{__ashellFallback}}" />
+<view wx:if="{{__shellReady}}" class="record-page">
+  <empty-state wx:if="{{!consumeList.length && loadStatus !== 'loading'}}" description="{{pageConfig.empty_description}}" />
+
+  <block wx:else>
+    <view wx:for="{{consumeList}}" wx:key="index" class="record-card">
+      <image class="record-card__icon" src="/assets/book-detail/s_account.png" mode="aspectFit"></image>
+      <view class="record-card__body">
+        <view class="record-card__main">
+          <view class="record-card__title">{{item.series_name}} · {{item.episode_progress}}</view>
+          <view class="record-card__time">{{item.paid_time}}</view>
+        </view>
+        <view class="record-card__price-wrap">
+          <view class="record-card__minus">-{{item.paid_amount}}K币</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <load-more status="{{loadStatus}}"></load-more>
+
+  <customer-button>
+    <view class="float-customer">
+      <image wx:if="{{pageConfig.customer_icon}}" class="float-customer__icon" src="{{pageConfig.customer_icon}}" mode="aspectFit"></image>
+      <text class="float-customer__text">{{pageConfig.customer_text}}</text>
+    </view>
+  </customer-button>
+</view>

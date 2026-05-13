@@ -1,0 +1,76 @@
+<view class="page-shell manage-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">账单管理</view>
+  </view>
+
+  <view class="card summary-card rise-card" style="animation-delay: 0.06s;">
+    <view class="summary-grid">
+      <view class="summary-item">
+        <text class="summary-label">账单总数</text>
+        <text class="summary-value">{{summary.count}}</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-label">累计收入</text>
+        <text class="summary-value amount-income">+{{summary.income}}</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-label">累计支出</text>
+        <text class="summary-value amount-expense">-{{summary.expense}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="chip-row filter-row rise-card" style="animation-delay: 0.12s;">
+    <view
+      wx:for="{{filterTabs}}"
+      wx:key="value"
+      class="chip {{filter === item.value ? 'chip-active' : ''}}"
+      data-filter="{{item.value}}"
+      hover-class="chip-hover"
+      bindtap="handleFilterChange"
+    >
+      {{item.label}}
+    </view>
+  </view>
+
+  <view wx:if="{{bills.length}}" class="manage-list rise-card" style="animation-delay: 0.18s;">
+    <view wx:for="{{bills}}" wx:key="id" class="card manage-item">
+      <view class="manage-main" data-id="{{item.id}}" bindtap="goDetail" hover-class="chip-hover">
+        <view class="manage-left">
+          <view class="manage-mark {{item.type === 'income' ? 'manage-mark-income' : 'manage-mark-expense'}}"></view>
+          <view class="manage-copy">
+            <view class="manage-topline">
+              <text class="manage-category">{{item.category}}</text>
+              <text class="pill {{item.type === 'income' ? 'pill-income' : 'pill-expense'}}">{{item.typeText}}</text>
+            </view>
+            <view class="manage-note">{{item.note}}</view>
+          </view>
+        </view>
+        <view class="manage-right">
+          <view class="manage-amount {{item.type === 'income' ? 'amount-income' : 'amount-expense'}}">{{item.type === 'income' ? '+' : '-'}}{{item.amount}}</view>
+          <view class="manage-date">{{item.date}}</view>
+        </view>
+      </view>
+      <view class="manage-footer">
+        <button class="button-reset delete-button" hover-class="button-hover" catchtap="deleteBill" data-id="{{item.id}}">删除</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="card empty-box rise-card" style="animation-delay: 0.18s;">
+    <view class="empty-orbit">
+      <view class="empty-wave"></view>
+      <view class="empty-wave-small"></view>
+      <view class="empty-card">
+        <view class="empty-line"></view>
+        <view class="empty-line empty-line-short"></view>
+      </view>
+    </view>
+    <view class="empty-title">这里还没有可整理的账单</view>
+    <navigator class="primary-button empty-button" url="/pages/add/index" open-type="switchTab" hover-class="button-hover">去记账</navigator>
+  </view>
+</view>

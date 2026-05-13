@@ -1,0 +1,5 @@
+<view class="load-more">
+  <text wx:if="{{status === 'loading'}}">加载中...</text>
+  <text wx:elif="{{status === 'nomore'}}">- 已经到底了 -</text>
+  <text wx:else>加载更多</text>
+</view>

@@ -1,0 +1,101 @@
+<view class="page-shell stats-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">数据统计</view>
+  </view>
+
+  <view class="card overview-card rise-card" style="animation-delay: 0.06s;">
+    <view class="section-head">
+      <view>
+        <view class="section-title">累计总览</view>
+        <view class="section-note">共 {{overview.count}} 条记录</view>
+      </view>
+      <view class="stats-pill">{{overview.monthLabel}}</view>
+    </view>
+    <view class="stats-grid">
+      <view class="stats-item">
+        <text class="stats-label">累计收入</text>
+        <text class="stats-value amount-income">+{{overview.totalIncome}}</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-label">累计支出</text>
+        <text class="stats-value amount-expense">-{{overview.totalExpense}}</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-label">累计结余</text>
+        <text class="stats-value">{{overview.balance}}</text>
+      </view>
+      <view class="stats-item stats-item-accent">
+        <text class="stats-label">本月收支</text>
+        <view class="stats-inline">
+          <text class="amount-income">+{{overview.monthIncome}}</text>
+          <text class="amount-expense">-{{overview.monthExpense}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card trend-card rise-card" style="animation-delay: 0.12s;">
+    <view class="section-title">近六个月</view>
+    <view class="trend-list">
+      <view wx:for="{{trendList}}" wx:key="monthKey" class="trend-item">
+        <view class="trend-head">
+          <text class="trend-label">{{item.label}}</text>
+          <view class="trend-values">
+            <text class="amount-income">+{{item.income}}</text>
+            <text class="amount-expense">-{{item.expense}}</text>
+          </view>
+        </view>
+        <view class="trend-bar-group">
+          <view class="bar-track"><view class="bar-fill bar-fill-income" style="width: {{item.incomeWidth}};"></view></view>
+          <view class="bar-track trend-gap"><view class="bar-fill bar-fill-expense" style="width: {{item.expenseWidth}};"></view></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card rank-card rise-card" style="animation-delay: 0.18s;">
+    <view class="rank-section">
+      <view class="section-head">
+        <view>
+          <view class="section-title">支出分类</view>
+          <view class="section-note">金额前五</view>
+        </view>
+        <view class="rank-badge rank-badge-expense">OUT</view>
+      </view>
+      <view wx:if="{{expenseRank.length}}">
+        <view wx:for="{{expenseRank}}" wx:key="name" class="rank-item">
+          <view class="rank-head">
+            <text>{{item.name}}</text>
+            <text class="amount-expense">{{item.amount}}</text>
+          </view>
+          <view class="bar-track"><view class="bar-fill bar-fill-expense" style="width: {{item.width}};"></view></view>
+        </view>
+      </view>
+      <view wx:else class="rank-empty">暂无支出分类数据</view>
+    </view>
+
+    <view class="rank-section rank-section-gap">
+      <view class="section-head">
+        <view>
+          <view class="section-title">收入分类</view>
+          <view class="section-note">金额前五</view>
+        </view>
+        <view class="rank-badge rank-badge-income">IN</view>
+      </view>
+      <view wx:if="{{incomeRank.length}}">
+        <view wx:for="{{incomeRank}}" wx:key="name" class="rank-item">
+          <view class="rank-head">
+            <text>{{item.name}}</text>
+            <text class="amount-income">{{item.amount}}</text>
+          </view>
+          <view class="bar-track"><view class="bar-fill bar-fill-income" style="width: {{item.width}};"></view></view>
+        </view>
+      </view>
+      <view wx:else class="rank-empty">暂无收入分类数据</view>
+    </view>
+  </view>
+</view>

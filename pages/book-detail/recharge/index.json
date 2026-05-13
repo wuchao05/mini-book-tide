@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "default",
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "ashell-fallback": "/components/ashell-fallback/index",
+    "empty-state": "/components/book-detail/empty-state/index",
+    "load-more": "/components/book-detail/load-more/index",
+    "customer-button": "/components/book-detail/customer-button/index"
+  }
+}

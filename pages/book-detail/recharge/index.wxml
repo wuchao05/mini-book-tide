@@ -1,0 +1,32 @@
+<ashell-fallback wx:if="{{__ashellFallback}}" />
+<view wx:if="{{__shellReady}}" class="record-page">
+  <empty-state
+    wx:if="{{loadStatus !== 'loading' && !rechargeList.length}}"
+    description="{{pageConfig.empty_description}}"
+  />
+
+  <block wx:else>
+    <view wx:for="{{rechargeList}}" wx:key="index" class="record-card">
+      <image class="record-card__icon" src="/assets/book-detail/s_vip.png" mode="aspectFit"></image>
+      <view class="record-card__body">
+        <view class="record-card__main">
+          <view class="record-card__title">{{item.title || ''}}</view>
+          <view class="record-card__time">{{item.date || ''}}</view>
+        </view>
+        <view class="record-card__price-wrap">
+          <view class="record-card__price">{{item.displayPrice}}</view>
+          <view class="record-card__sub">{{item.sub_title || ''}}</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <load-more status="{{loadStatus}}"></load-more>
+
+  <customer-button>
+    <view class="float-customer">
+      <image wx:if="{{pageConfig.customer_icon}}" class="float-customer__icon" src="{{pageConfig.customer_icon}}" mode="aspectFit"></image>
+      <text class="float-customer__text">{{pageConfig.customer_text}}</text>
+    </view>
+  </customer-button>
+</view>

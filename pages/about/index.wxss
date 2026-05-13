@@ -1,0 +1,14 @@
+.about-card {
+  padding: 28rpx;
+}
+
+.about-card + .about-card {
+  margin-top: 22rpx;
+}
+
+.about-line {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}

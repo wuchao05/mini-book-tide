@@ -1,0 +1,58 @@
+<ashell-fallback wx:if="{{__ashellFallback}}" />
+<view wx:if="{{__shellReady}}" class="mine-page" style="background: {{pageBackground}};">
+  <view class="mine-header">
+    <image wx:if="{{headerConfig.bg_image}}" class="mine-header__bg" src="{{headerConfig.bg_image}}" mode="scaleToFill"></image>
+    <view class="mine-header__content" style="top: {{navTop}}px;">
+      <image class="mine-header__avatar" src="{{userInfo.avatar_url || headerConfig.default_avatar}}" mode="aspectFill"></image>
+      <view class="mine-header__info">
+        <view class="mine-header__name">{{userInfo.nickname || headerConfig.default_nickname}}</view>
+        <view class="mine-header__id">{{headerConfig.user_id_prefix}}{{userInfo.user_id}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="account-wrap">
+    <view class="account-card">
+      <image wx:if="{{balanceCard.icon}}" class="account-card__icon" src="{{balanceCard.icon}}" mode="aspectFit"></image>
+      <view class="account-card__label">{{balanceCard.label}}</view>
+      <view class="account-card__value-row">
+        <text class="account-card__value">{{coin || 0}}</text>
+        <view wx:if="{{!isFree}}" class="account-card__action" bindtap="goToCharge">
+          {{balanceCard.action_text}}
+          <view class="account-card__action-icon"></view>
+        </view>
+      </view>
+    </view>
+    <view class="account-card">
+      <image wx:if="{{vipCard.icon}}" class="account-card__icon" src="{{vipCard.icon}}" mode="aspectFit"></image>
+      <view class="account-card__label">{{vipCard.label}}</view>
+      <view class="account-card__value-row">
+        <text class="account-card__value">{{userInfo.vip_day || 0}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-list">
+    <block wx:for="{{menuList}}" wx:key="key">
+      <view wx:if="{{item.isCustomer}}" class="customer-item">
+        <view class="customer-item__main">
+          <image class="customer-item__icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <view class="customer-item__name">{{item.name}}</view>
+          <view wx:if="{{item.sub_text}}" class="customer-item__sub">{{item.sub_text}}</view>
+        </view>
+        <image class="customer-item__arrow" src="{{commonArrowIcon}}" mode="aspectFit"></image>
+        <button class="customer-item__overlay" open-type="contact"></button>
+      </view>
+      <view wx:else class="menu-item" bindtap="handleMenuTap" data-index="{{index}}">
+        <view class="menu-item__left">
+          <image class="menu-item__icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <view class="menu-item__title">{{item.name}}</view>
+        </view>
+        <image class="menu-item__arrow" src="{{commonArrowIcon}}" mode="aspectFit"></image>
+      </view>
+    </block>
+  </view>
+
+  <s-package id="packagePopup" source="mine" shell-config="{{paymentPopupConfig}}" bindpaystatus="handlePayStatus"></s-package>
+  <detail-tab-bar tabs="{{tabBarItems}}" />
+</view>

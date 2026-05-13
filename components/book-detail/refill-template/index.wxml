@@ -1,0 +1,77 @@
+<view wx:if="{{show}}" class="refill-overlay" bindtap="closeModal">
+  <view class="refill-panel" catchtap="noop">
+    <view class="refill-handle"></view>
+
+    <view class="refill-close" catchtap="closeModal">
+      <text class="refill-close__icon">×</text>
+    </view>
+
+    <view class="refill-stage">
+      <view class="refill-stage__glow refill-stage__glow--left"></view>
+      <view class="refill-stage__glow refill-stage__glow--right"></view>
+
+      <view class="refill-stage__header">
+        <view class="refill-stage__eyebrow">K币充值</view>
+        <view class="refill-stage__title">好内容值得支持，感谢您的陪伴！</view>
+      </view>
+
+      <view class="refill-summary" wx:if="{{episodeList && swipeIndex !== undefined}}">
+        <view class="refill-summary__item">
+          <view class="refill-summary__label">解锁本集</view>
+          <view class="refill-summary__value">{{episodeList[swipeIndex] ? episodeList[swipeIndex].price : 0}} K币</view>
+        </view>
+        <view class="refill-summary__divider"></view>
+        <view class="refill-summary__item">
+          <view class="refill-summary__label">当前余额</view>
+          <view class="refill-summary__value">{{(userInfo && userInfo.coin) || 0}} K币</view>
+        </view>
+      </view>
+
+      <scroll-view scroll-y class="refill-scroll" enhanced show-scrollbar="{{false}}">
+        <view wx:if="{{!rechargeInfo || !rechargeInfo.list || !rechargeInfo.list.length}}" class="sku-empty">暂无可用套餐，请稍后再试</view>
+        <view wx:else class="sku-list">
+          <view
+            wx:for="{{(rechargeInfo && rechargeInfo.list) || []}}"
+            wx:key="sku_id"
+            class="sku-card {{item.is_highlight && item.is_highlight != 0 ? 'sku-card--featured' : ''}} {{item.is_breath && item.is_breath != 0 ? 'sku-card--pulse' : ''}}"
+            catchtap="payItem"
+            data-item="{{item}}"
+          >
+            <view wx:if="{{item.corner_mark}}" class="sku-card__ribbon {{item.bg_color == 2 ? 'sku-card__ribbon--gold' : ''}}">
+              {{item.corner_mark}}
+            </view>
+
+            <view class="sku-card__body">
+              <view class="sku-card__price-row">
+                <text class="sku-card__currency">¥</text>
+                <text class="sku-card__price">{{item.price / 100}}</text>
+              </view>
+              <view wx:if="{{item.sub_title}}" class="sku-card__sub-title">{{item.sub_title}}</view>
+              <view wx:if="{{item.title}}" class="sku-card__title">{{item.title}}</view>
+            </view>
+
+            <image wx:if="{{item.is_hand && item.is_hand != 0}}" class="sku-card__gesture" src="/assets/book-detail/pay_dialog/isGesture.png" mode="aspectFit"></image>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="refill-footer">
+      <view class="refill-notice-link" catchtap="openChargeNotice">支付前请阅读《付费须知》</view>
+    </view>
+  </view>
+
+  <view wx:if="{{showChargeNotice}}" class="notice-overlay" catchtap="closeChargeNotice">
+    <view class="notice-card" catchtap="noop">
+      <view class="notice-card__badge">IMPORTANT</view>
+      <view class="notice-card__title">付费须知</view>
+      <view class="notice-card__body">
+        <view class="notice-card__item">1. K币、会员及剧卡属于虚拟商品，1元兑换100K币，一经购买不得退换；</view>
+        <view class="notice-card__item">2. 充值后到账可能有延迟，2小时内未到账请联系客服；</view>
+        <view class="notice-card__item">3. 未满18周岁的未成年人，应在监护人指导下进行充值与观看；</view>
+        <view class="notice-card__item">4. 客服工作时间：10:00~22:00。</view>
+      </view>
+      <view class="notice-card__button" catchtap="closeChargeNotice">我已知晓</view>
+    </view>
+  </view>
+</view>

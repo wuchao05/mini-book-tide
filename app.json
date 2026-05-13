@@ -1,0 +1,57 @@
+{
+  "entryPagePath": "pages/launcher/index",
+  "pages": [
+    "pages/launcher/index",
+    "pages/home/index",
+    "pages/add/index",
+    "pages/mine/index",
+    "pages/bill-detail/index",
+    "pages/bill-manage/index",
+    "pages/stats/index",
+    "pages/about/index",
+    "pages/book-detail/theater/index",
+    "pages/book-detail/follow/index",
+    "pages/book-detail/mine/index",
+    "pages/book-detail/recharge/index",
+    "pages/book-detail/consume/index",
+    "pages/book-detail/forecast/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "洞洞助手",
+    "navigationBarBackgroundColor": "#f6f8ff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#eef3ff",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#7a86a8",
+    "selectedColor": "#265dff",
+    "backgroundColor": "#fbfbfe",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "账本",
+        "iconPath": "assets/tabbar/book.png",
+        "selectedIconPath": "assets/tabbar/book-active.png"
+      },
+      {
+        "pagePath": "pages/add/index",
+        "text": "记账",
+        "iconPath": "assets/tabbar/add.png",
+        "selectedIconPath": "assets/tabbar/add-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "assets/tabbar/mine.png",
+        "selectedIconPath": "assets/tabbar/mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "embeddedAppIdList": [
+    "wxb6109138e25d824b"
+  ],
+  "sitemapLocation": "sitemap.json"
+}

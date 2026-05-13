@@ -1,0 +1,150 @@
+.overview-card,
+.trend-card,
+.rank-card {
+  padding: 28rpx;
+}
+
+.stats-pill {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(38, 93, 255, 0.1);
+  color: var(--brand);
+  font-size: 22rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.stats-item {
+  padding: 22rpx;
+  border-radius: 22rpx;
+  background: rgba(247, 249, 255, 0.94);
+}
+
+.stats-item-accent {
+  background: linear-gradient(135deg, rgba(234, 240, 255, 0.94) 0%, rgba(255, 240, 231, 0.9) 100%);
+}
+
+.stats-label {
+  display: block;
+  font-size: 22rpx;
+  color: var(--text-secondary);
+}
+
+.stats-value {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.stats-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rpx;
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.trend-card,
+.rank-card {
+  margin-top: 22rpx;
+}
+
+.trend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.trend-item {
+  padding: 20rpx;
+  border-radius: 22rpx;
+  background: rgba(247, 249, 255, 0.92);
+}
+
+.trend-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.trend-label {
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.trend-values {
+  display: flex;
+  gap: 16rpx;
+  font-size: 22rpx;
+}
+
+.trend-bar-group {
+  margin-top: 16rpx;
+}
+
+.trend-gap {
+  margin-top: 10rpx;
+}
+
+.rank-section-gap {
+  margin-top: 28rpx;
+  padding-top: 28rpx;
+  border-top: 1rpx solid rgba(38, 93, 255, 0.08);
+}
+
+.rank-badge {
+  min-width: 82rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 999rpx;
+  text-align: center;
+  font-size: 20rpx;
+}
+
+.rank-badge-expense {
+  color: var(--expense);
+  background: rgba(244, 107, 69, 0.12);
+}
+
+.rank-badge-income {
+  color: var(--income);
+  background: rgba(42, 157, 127, 0.12);
+}
+
+.rank-item + .rank-item {
+  margin-top: 16rpx;
+}
+
+.rank-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 10rpx;
+  font-size: 24rpx;
+}
+
+.rank-empty {
+  margin-top: 18rpx;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 375px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trend-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

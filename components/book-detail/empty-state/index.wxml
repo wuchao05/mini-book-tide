@@ -1,0 +1,8 @@
+<view class="empty-state">
+  <image class="empty-state__icon" src="{{icon || '/assets/book-detail/empty.png'}}" mode="aspectFit" />
+  <view class="empty-state__title">{{title || '这里空空如也'}}</view>
+  <view class="empty-state__desc">{{description || '暂无数据'}}</view>
+  <button wx:if="{{showButton}}" class="empty-state__button" bindtap="handleTap">
+    {{buttonText}}
+  </button>
+</view>

@@ -1,0 +1,16 @@
+<view class="page-shell about-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">关于{{appName}}</view>
+  </view>
+
+  <view class="card about-card rise-card" style="animation-delay: 0.06s;">
+    <view class="section-title">核心能力</view>
+    <view class="about-line">1. 首页集中展示本月收支、最近账单和快捷入口。</view>
+    <view class="about-line">2. 记账页支持收入支出切换、分类选择、日期选择和备注补充。</view>
+    <view class="about-line">3. 统计与管理页联动呈现趋势、分类排行和账单详情。</view>
+  </view>
+</view>

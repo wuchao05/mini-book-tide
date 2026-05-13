@@ -1,0 +1,106 @@
+<view class="page-shell home-page">
+  <view class="page-hero rise-card">
+    <view class="hero-backdrop">
+      <view class="hero-orb hero-orb-primary"></view>
+      <view class="hero-orb hero-orb-secondary"></view>
+    </view>
+    <view class="page-title">{{appName}}</view>
+  </view>
+
+  <view class="card card-soft overview-card rise-card" style="animation-delay: 0.06s;">
+    <view class="section-head">
+      <view>
+        <view class="section-title">本月概览</view>
+        <view class="section-note">本月已收录 {{monthBillCount}} 笔账单</view>
+      </view>
+      <navigator class="section-link" url="/pages/stats/index">看统计</navigator>
+    </view>
+    <view class="overview-grid">
+      <view class="overview-item">
+        <text class="overview-label">收入</text>
+        <text class="overview-value amount-income">+{{summary.income}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label">支出</text>
+        <text class="overview-value amount-expense">-{{summary.expense}}</text>
+      </view>
+      <view class="overview-item overview-item-wide">
+        <text class="overview-label">结余</text>
+        <text class="overview-value">{{summary.balance}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="quick-row rise-card" style="animation-delay: 0.12s;">
+    <navigator class="card quick-card quick-card-brand" url="/pages/add/index" open-type="switchTab" hover-class="chip-hover">
+      <text class="quick-title">记一笔</text>
+    </navigator>
+    <navigator class="card quick-card" url="/pages/bill-manage/index" hover-class="chip-hover">
+      <text class="quick-title">管理账单</text>
+    </navigator>
+  </view>
+
+  <view class="list-section rise-card" style="animation-delay: 0.18s;">
+    <view class="section-head">
+      <view>
+        <view class="section-title">最近账单</view>
+        <view class="section-note">{{recentHint}}</view>
+      </view>
+      <navigator class="section-link" url="/pages/bill-manage/index">全部查看</navigator>
+    </view>
+
+    <view class="chip-row filter-row">
+      <view
+        wx:for="{{filterTabs}}"
+        wx:key="value"
+        class="chip {{filter === item.value ? 'chip-active' : ''}}"
+        data-filter="{{item.value}}"
+        hover-class="chip-hover"
+        bindtap="handleFilterChange"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <view wx:if="{{recentBills.length}}" class="bill-list">
+      <view
+        wx:for="{{recentBills}}"
+        wx:key="id"
+        class="card bill-item"
+        data-id="{{item.id}}"
+        bindtap="goToDetail"
+        hover-class="chip-hover"
+      >
+        <view class="bill-main">
+          <view class="bill-left">
+            <view class="bill-dot {{item.type === 'income' ? 'bill-dot-income' : 'bill-dot-expense'}}"></view>
+            <view class="bill-copy">
+              <view class="bill-topline">
+                <text class="bill-category">{{item.category}}</text>
+                <text class="pill {{item.type === 'income' ? 'pill-income' : 'pill-expense'}}">{{item.typeText}}</text>
+              </view>
+              <text class="bill-note">{{item.note}}</text>
+            </view>
+          </view>
+          <view class="bill-right">
+            <text class="bill-amount {{item.type === 'income' ? 'amount-income' : 'amount-expense'}}">{{item.type === 'income' ? '+' : '-'}}{{item.amount}}</text>
+            <text class="bill-date">{{item.date}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="card empty-box">
+      <view class="empty-orbit">
+        <view class="empty-wave"></view>
+        <view class="empty-wave-small"></view>
+        <view class="empty-card">
+          <view class="empty-line"></view>
+          <view class="empty-line empty-line-short"></view>
+        </view>
+      </view>
+      <view class="empty-title">当前筛选下还没有账单</view>
+      <navigator class="primary-button empty-button" url="/pages/add/index" open-type="switchTab" hover-class="button-hover">去记账</navigator>
+    </view>
+  </view>
+</view>

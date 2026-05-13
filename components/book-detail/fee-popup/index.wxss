@@ -1,0 +1,45 @@
+.fee-popup-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.fee-popup {
+  width: 600rpx;
+  padding: 30rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+}
+
+.fee-popup__title {
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #121620;
+  text-align: center;
+}
+
+.fee-popup__body {
+  margin-bottom: 30rpx;
+}
+
+.fee-popup__item {
+  margin-bottom: 15rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #666666;
+}
+
+.fee-popup__btn {
+  height: 80rpx;
+  font-size: 30rpx;
+  line-height: 80rpx;
+  color: #ffffff;
+  text-align: center;
+  background: linear-gradient(90deg, #ff5934 0%, #ffc700 100%);
+  border-radius: 40rpx;
+}

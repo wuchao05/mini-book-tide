@@ -1,0 +1,10 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "ashell-fallback": "/components/ashell-fallback/index",
+    "mask": "/components/book-detail/mask/index",
+    "refill-template": "/components/book-detail/refill-template/index",
+    "radar-panel": "/pages/book-detail/forecast/components/radar/index",
+    "climate-detail": "/pages/book-detail/forecast/components/climate-detail/index"
+  }
+}

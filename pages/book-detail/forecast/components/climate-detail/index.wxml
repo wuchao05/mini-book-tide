@@ -1,0 +1,45 @@
+<view wx:if="{{show}}" class="episode-detail-overlay" bindtap="closeModal">
+  <view class="episode-detail" catchtap="noop">
+    <view class="episode-detail-handle"></view>
+
+    <view class="close-btn" catchtap="closeModal">
+      <text class="close-icon">×</text>
+    </view>
+
+    <view class="episode-detail-header">
+      <image class="header-cover" src="{{episodeDetail.cover}}" mode="aspectFill" />
+      <view class="header-info">
+        <view class="header-title">{{episodeDetail.title}}</view>
+        <view class="header-subtitle">全{{episodeDetail.episode_num || episodes.length}}集 · 当前第{{currentIndex + 1}}集</view>
+      </view>
+    </view>
+
+    <view class="episode-detail-tabs">
+      <scroll-view class="tabs-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view
+          class="tab-item {{activeTabIndex === tabIndex ? 'active' : ''}}"
+          wx:for="{{tabs}}"
+          wx:key="label"
+          wx:for-index="tabIndex"
+          catchtap="switchTab"
+          data-index="{{tabIndex}}"
+        >
+          {{item.label}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="episode-detail-content">
+      <view class="episode-grid">
+        <block wx:for="{{currentEpisodes}}" wx:key="idx" wx:for-index="idx">
+          <view class="{{itemClasses[idx]}}" catchtap="onEpisodeTap" data-index="{{idx}}">
+            <text class="episode-no">{{item.episode_no || (tabOffset + idx + 1)}}</text>
+            <view class="lock-badge" wx:if="{{item.lock_status == 1}}">
+              <image class="lock-icon" src="/assets/book-detail/radar/lock.png" mode="aspectFit" />
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

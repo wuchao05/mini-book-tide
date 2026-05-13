@@ -1,0 +1,18 @@
+var RENDER_WINDOW_SIZE = 1
+
+function isInRenderWindow(index, currentIndex, total) {
+  if (index < 0 || currentIndex < 0 || !total) return false
+  var min = Math.max(0, currentIndex - RENDER_WINDOW_SIZE)
+  var max = Math.min(total - 1, currentIndex + RENDER_WINDOW_SIZE)
+  return index >= min && index <= max
+}
+
+function shouldLoadVideo(index, currentIndex, total) {
+  if (index < 0 || currentIndex < 0 || !total) return false
+  return index === currentIndex || index === Math.min(total - 1, currentIndex + 1)
+}
+
+module.exports = {
+  isInRenderWindow: isInRenderWindow,
+  shouldLoadVideo: shouldLoadVideo,
+}

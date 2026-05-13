@@ -1,0 +1,8 @@
+{
+  "name": "mini-book-tide",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "use-miniapp": "node scripts/use-miniapp.js"
+  }
+}

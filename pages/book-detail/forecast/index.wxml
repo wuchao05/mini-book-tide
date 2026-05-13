@@ -1,0 +1,60 @@
+<ashell-fallback wx:if="{{__ashellFallback}}" />
+<view wx:if="{{__shellReady}}" class="forecast-page">
+  <radar-panel
+    id="radarPanel"
+    wx:if="{{episodeList && episodeList.length > 0}}"
+    episodes="{{episodeList}}"
+    episodeDetail="{{episodeDetail}}"
+    initialIndex="{{swipeIndex}}"
+    bind:back="handleBack"
+    bind:episodechange="onEpisodeChange"
+    bind:ended="onEpisodeEnded"
+    bind:error="onPlayError"
+  />
+
+  <view class="page-bottom-bar" catchtap="showEpisodeDetailModal" wx:if="{{episodeDetail}}">
+    <view class="page-bottom-bar-left">
+      <view class="page-bottom-bar-image">
+        <image src="{{episodeDetail.cover}}" mode="aspectFill"></image>
+      </view>
+      <view>
+        <view class="page-bottom-bar-title">{{episodeDetail.title}}</view>
+        <view class="page-bottom-bar-desc">
+          全{{episodeDetail.episode_num}}集·第{{swipeIndex + 1}}集
+          <image src="/assets/book-detail/radar/go.png" mode="aspectFit"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="page-bottom-bar-right">
+      <view class="page-bottom-bar-selection">
+        <view class="page-bottom-bar-selection__label">选集</view>
+        <view class="page-bottom-bar-selection__meta">{{swipeIndex + 1}}/{{episodeDetail.episode_num}}</view>
+        <image class="page-bottom-bar-selection__icon" src="/assets/book-detail/radar/go.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <mask wx:if="{{showMask}}" bind:click="onMaskClick" />
+
+  <refill-template
+    show="{{showRefillModal}}"
+    episodeList="{{episodeList}}"
+    swipeIndex="{{swipeIndex}}"
+    userInfo="{{userInfo}}"
+    rechargeInfo="{{rechargeInfo}}"
+    bind:close="onRefillModalClose"
+    bind:paymentReturn="onPaymentReturn"
+  />
+
+  <climate-detail
+    show="{{showEpisodeDetail}}"
+    episodes="{{episodeList}}"
+    episodeDetail="{{episodeDetail}}"
+    currentIndex="{{swipeIndex}}"
+    bind:episodechange="onEpisodeDetailItemChange"
+    bind:close="onEpisodeDetailClose"
+  />
+
+  <view class="white-screen" wx:if="{{showWhiteScreen}}">禁止截屏，否则将无法观看</view>
+</view>
