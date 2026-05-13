@@ -1,12 +1,6 @@
 const { disableMiniProgramShare } = require('../page')
-const { STORAGE_KEYS } = require('../../constants')
-const { getStorage } = require('../storage')
-
-function resolveEffectiveMode(shellConfig) {
-  const cachedMode = getStorage(STORAGE_KEYS.SHELL_MODE, '')
-  const apiMode = (shellConfig && shellConfig.mode) || ''
-  return apiMode || cachedMode
-}
+const passcodeAuth = require('./passcode-auth')
+const passcodeEntry = require('./passcode-entry')
 
 async function guardBShellLaunchAccess() {
   const app = getApp()
@@ -16,26 +10,42 @@ async function guardBShellLaunchAccess() {
     return false
   }
 
-  let shellConfig = app.getMiniAppShellConfig ? app.getMiniAppShellConfig() : null
+  const shellResult = app.fetchMiniAppShellConfigWithRetry
+    ? await app.fetchMiniAppShellConfigWithRetry(1)
+    : { success: false, data: null }
 
-  if (!shellConfig) {
-    const result = app.fetchMiniAppShellConfigWithRetry
-      ? await app.fetchMiniAppShellConfigWithRetry(1)
-      : { success: false, data: null }
-
-    shellConfig = result.data || null
+  if (!(shellResult.success && shellResult.data)) {
+    wx.showToast({
+      title: '网络异常，请稍后重试',
+      icon: 'none',
+    })
+    passcodeEntry.openAShellWithPasscodePrompt('网络异常，请稍后重试')
+    return false
   }
 
-  if (resolveEffectiveMode(shellConfig) === 'B') {
-    if (typeof app.setCurrentMode === 'function') {
-      app.setCurrentMode('bshell')
-    }
+  if (shellResult.data.mode !== 'B') {
+    passcodeAuth.clearPrompt()
+    wx.reLaunch({
+      url: '/pages/home/index',
+    })
+    return false
+  }
+
+  const passcodeResult = await passcodeAuth.verifyStoredPasscode()
+  if (passcodeResult && passcodeResult.success) {
     return true
   }
 
-  if (typeof app.setCurrentMode === 'function') {
-    app.setCurrentMode('ashell')
+  if (passcodeResult && passcodeResult.reason === 'network') {
+    wx.showToast({
+      title: passcodeResult.message || '网络异常，请稍后重试',
+      icon: 'none',
+    })
   }
+
+  passcodeEntry.openAShellWithPasscodePrompt(
+    (passcodeResult && passcodeResult.message) || '请输入口令',
+  )
   return false
 }
 

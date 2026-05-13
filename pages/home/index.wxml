@@ -104,3 +104,33 @@
     </view>
   </view>
 </view>
+
+<view wx:if="{{passcodeDialogVisible}}" class="passcode-gate" catchtouchmove="noop">
+  <view class="passcode-gate__mask"></view>
+  <view class="passcode-gate__panel">
+    <view class="passcode-gate__mark">B</view>
+    <view class="passcode-gate__title">输入口令继续观看</view>
+    <view class="passcode-gate__desc">当前内容需要验证口令，验证通过后会自动进入短剧内容。</view>
+    <view class="passcode-gate__field">
+      <input
+        class="passcode-gate__input"
+        password="true"
+        placeholder="请输入口令"
+        value="{{passcodeValue}}"
+        confirm-type="done"
+        bindinput="handlePasscodeInput"
+        bindconfirm="submitPasscode"
+      />
+    </view>
+    <view wx:if="{{passcodeError}}" class="passcode-gate__error">{{passcodeError}}</view>
+    <button
+      class="passcode-gate__button"
+      loading="{{passcodeSubmitting}}"
+      disabled="{{passcodeSubmitting}}"
+      bindtap="submitPasscode"
+      hover-class="button-hover"
+    >
+      {{passcodeSubmitting ? '验证中...' : '验证并进入'}}
+    </button>
+  </view>
+</view>

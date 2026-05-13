@@ -26,7 +26,7 @@ createBShellPage({
   },
 
   async onLoad(options) {
-    await splayRuntime.ensureStarted(getApp().globalData.launchOptions)
+    await splayRuntime.ensureStarted()
 
     const albumId = Number(options.album_id || 0)
     if (!albumId) {

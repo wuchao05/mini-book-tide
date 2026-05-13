@@ -15,7 +15,7 @@ const {
   buildStandardDramaGroups,
   buildStandardDramaItem,
 } = require('../../../utils/book-detail/detail-layout');
-const { buildBShellPageUrl, resolveLegacyLink } = require('../../../utils/shell-pages');
+const { buildBShellPageUrl } = require('../../../utils/shell-pages');
 
 const platformInfo = platform.getPlatformInfo();
 platformInfo.navBarTotalHeight = platformInfo.statusBarHeight + platformInfo.navBarHeight;
@@ -41,7 +41,6 @@ createBShellPage({
   data: {
     platform: platformInfo,
     appStore: {
-      isFromExternalLink: false,
       enableH5Page: false,
     },
     activeIndex: 0,
@@ -130,12 +129,6 @@ createBShellPage({
       page,
       page_size: pageSize,
       app: appStore.state.appIdentifier,
-      click_id: (appStore.state.startParam && appStore.state.startParam.clickid) || '',
-      promotion_id:
-        (appStore.state.startParam &&
-          (appStore.state.startParam.promotionid || appStore.state.startParam.promotion_id)) ||
-        '',
-      account_index: appStore.state.accountIndex || '',
     };
   },
 
@@ -150,26 +143,16 @@ createBShellPage({
     if ((params.app || '') !== (cache.app || '')) {
       return null;
     }
-    if ((params.click_id || '') !== (cache.clickId || '')) {
-      return null;
-    }
-    if ((params.promotion_id || '') !== (cache.promotionId || '')) {
-      return null;
-    }
-    if ((params.account_index || '') !== (cache.accountIndex || '')) {
-      return null;
-    }
     return cache;
   },
 
   async onShow() {
-    await splayRuntime.ensureStarted(getApp().globalData.launchOptions);
+    await splayRuntime.ensureStarted();
     await this.syncShellConfig();
     this.applyPendingTab();
     this.syncGlobalState();
     const loginSuccess = await auth.ensureLogin();
     await Promise.all([this.loadPageData(), this.syncResumeCard(loginSuccess)]);
-    this.handleStartupParams();
   },
 
   applyPendingTab() {
@@ -198,9 +181,6 @@ createBShellPage({
   },
 
   onHide() {
-    appStore.update({
-      isHotLaunch: false,
-    });
     wx.hideLoading();
   },
 
@@ -226,7 +206,6 @@ createBShellPage({
   syncGlobalState() {
     this.setData({
       appStore: {
-        isFromExternalLink: appStore.state.isFromExternalLink,
         enableH5Page: this.data.h5PermissionReady && appStore.state.enableH5Page,
       },
       activeIndex: normalizeTheaterTab(
@@ -416,7 +395,6 @@ createBShellPage({
         h5PermissionReady: true,
         switchTabs: this.getVisibleSwitchTabs(this.data.allSwitchTabs, enableH5Page),
         appStore: {
-          isFromExternalLink: appStore.state.isFromExternalLink,
           enableH5Page,
         },
         activeIndex: normalizeTheaterTab(this.data.activeIndex, enableH5Page),
@@ -442,7 +420,6 @@ createBShellPage({
         h5PermissionReady: true,
         switchTabs: this.getVisibleSwitchTabs(this.data.allSwitchTabs, enableH5Page),
         appStore: {
-          isFromExternalLink: appStore.state.isFromExternalLink,
           enableH5Page,
         },
         activeIndex: normalizeTheaterTab(this.data.activeIndex, enableH5Page),
@@ -452,10 +429,6 @@ createBShellPage({
         yearLoadingStatus: 'loadmore',
       });
     }
-  },
-
-  async handleStartupParams() {
-    await splayRuntime.consumeHotLaunchExternalLink();
   },
 
   changeActiveIndex(event) {
@@ -498,8 +471,7 @@ createBShellPage({
       return;
     }
 
-    const link =
-      item.link.indexOf('pages/') === 0 ? resolveLegacyLink(`/${item.link}`) : '/' + item.link;
+    const link = item.link.charAt(0) === '/' ? item.link : '/' + item.link;
     wx.navigateTo({
       url: link,
     });

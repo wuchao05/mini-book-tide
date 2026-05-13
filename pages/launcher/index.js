@@ -1,88 +1,12 @@
 const ASHELL_HOME = '/pages/home/index'
-const BSHELL_HOME = '/pages/book-detail/theater/index'
 const { createPage } = require('../../utils/page')
-const { STORAGE_KEYS } = require('../../constants')
-const { getStorage, setStorage } = require('../../utils/storage')
-const {
-  buildBShellPageUrl,
-  buildPageUrl,
-  isDirectBShellPath,
-  normalizePagePath,
-} = require('../../utils/shell-pages')
+const passcodeAuth = require('../../utils/book-detail/passcode-auth')
+const passcodeEntry = require('../../utils/book-detail/passcode-entry')
 
-function parseTargetQuery(rawQuery) {
-  if (!rawQuery) {
-    return {}
+function openAShellEntry(app, options = {}) {
+  if (options.clearPrompt) {
+    passcodeAuth.clearPrompt()
   }
-
-  try {
-    const parsedQuery = JSON.parse(rawQuery)
-    return parsedQuery && typeof parsedQuery === 'object' ? parsedQuery : {}
-  } catch (error) {
-    console.warn('解析目标参数失败', error)
-    return {}
-  }
-}
-
-function buildTargetQuery(options) {
-  const query = Object.assign({}, options || {})
-
-  delete query.target_path
-  delete query.target_query
-
-  return query
-}
-
-function buildTargetUrl(path, query) {
-  const finalQuery = Object.assign({}, query, {
-    __from_launcher: 1,
-  })
-  return buildPageUrl(path, finalQuery) || BSHELL_HOME
-}
-
-function shouldResumeBShellSession(app, targetPath) {
-  return !!(app && app.hasActiveBShellSession && app.hasActiveBShellSession() && !targetPath)
-}
-
-function openResolvedBShellTarget(app, targetPath, entryQuery, shellConfig) {
-  const resolvedTargetPath = isDirectBShellPath(targetPath) ? normalizePagePath(targetPath) : ''
-  const defaultPageKey =
-    (shellConfig && shellConfig.tab_bar && shellConfig.tab_bar.default_page_key) || 'theater'
-  const fallbackUrl = buildBShellPageUrl(defaultPageKey, entryQuery) || BSHELL_HOME
-
-  app.setCurrentMode('bshell')
-  app.setLaunchOptions({
-    path: (resolvedTargetPath || fallbackUrl).replace(/^\//, ''),
-    query: entryQuery,
-  })
-
-  wx.reLaunch({
-    url: resolvedTargetPath ? buildTargetUrl(resolvedTargetPath, entryQuery) : fallbackUrl,
-  })
-}
-
-function openCachedBShellHome(app, shellConfig) {
-  const defaultPageKey =
-    (shellConfig && shellConfig.tab_bar && shellConfig.tab_bar.default_page_key) || 'theater'
-  const nextUrl = buildBShellPageUrl(defaultPageKey) || BSHELL_HOME
-
-  app.setCurrentMode('bshell')
-  app.setLaunchOptions({
-    path: nextUrl.replace(/^\//, ''),
-    query: {},
-  })
-
-  wx.reLaunch({
-    url: nextUrl,
-  })
-}
-
-function openAShellEntry(app, query) {
-  app.setCurrentMode('ashell')
-  app.setLaunchOptions({
-    path: ASHELL_HOME.replace(/^\//, ''),
-    query: query || {},
-  })
 
   wx.switchTab({
     url: ASHELL_HOME,
@@ -94,6 +18,23 @@ function openAShellEntry(app, query) {
   })
 }
 
+function openAShellWithPrompt(app, message) {
+  passcodeEntry.openAShellWithPasscodePrompt(message || '请输入口令')
+}
+
+async function requestBShellLayout(app) {
+  if (!(app && typeof app.refreshBShellLayout === 'function')) {
+    return {
+      success: false,
+      data: null,
+    }
+  }
+
+  return app.refreshBShellLayout({
+    force: true,
+  })
+}
+
 createPage({
   async onLoad(options) {
     await this.redirectByMode(options)
@@ -101,40 +42,61 @@ createPage({
 
   async redirectByMode(options) {
     const app = getApp()
-    const query = options || {}
-    const targetPath = query.target_path || ''
-    const fallbackQuery = buildTargetQuery(query)
-    const targetQuery = query.target_query ? parseTargetQuery(query.target_query) : fallbackQuery
-    const entryPath = normalizePagePath(targetPath)
-    const entryQuery = targetPath ? Object.assign({}, fallbackQuery, targetQuery) : fallbackQuery
-    const cachedMode = getStorage(STORAGE_KEYS.SHELL_MODE, '')
+
     const shellResult = app.fetchMiniAppShellConfigWithRetry
       ? await app.fetchMiniAppShellConfigWithRetry(1)
       : {
           success: false,
           data: null,
         }
-    const shellConfig =
-      shellResult.data || (app.getMiniAppShellConfig && app.getMiniAppShellConfig()) || null
-    const apiMode = (shellConfig && shellConfig.mode) || ''
-    const effectiveMode = apiMode || cachedMode
 
-    if (apiMode) {
-      setStorage(STORAGE_KEYS.SHELL_MODE, apiMode)
-    }
-
-    if (effectiveMode === 'B') {
-      await (app.ensureBShellLayout ? app.ensureBShellLayout() : Promise.resolve())
-
-      if (shouldResumeBShellSession(app, targetPath)) {
-        openCachedBShellHome(app, shellConfig)
-        return
-      }
-
-      openResolvedBShellTarget(app, entryPath, entryQuery, shellConfig)
+    if (!(shellResult.success && shellResult.data)) {
+      wx.showToast({
+        title: '网络异常，请稍后重试',
+        icon: 'none',
+      })
+      openAShellEntry(app)
       return
     }
 
-    openAShellEntry(app, fallbackQuery)
+    const shellConfig = shellResult.data || {}
+    if (shellConfig.mode !== 'B') {
+      openAShellEntry(app, {
+        clearPrompt: true,
+      })
+      return
+    }
+
+    const [layoutResult, passcodeResult] = await Promise.all([
+      requestBShellLayout(app),
+      passcodeAuth.verifyStoredPasscode(),
+    ])
+
+    if (!(layoutResult && layoutResult.success)) {
+      wx.showToast({
+        title: '网络异常，请稍后重试',
+        icon: 'none',
+      })
+      if (passcodeResult && passcodeResult.success) {
+        openAShellEntry(app)
+      } else {
+        openAShellWithPrompt(app, (passcodeResult && passcodeResult.message) || '请输入口令')
+      }
+      return
+    }
+
+    if (!(passcodeResult && passcodeResult.success)) {
+      if (passcodeResult && passcodeResult.reason === 'network') {
+        wx.showToast({
+          title: passcodeResult.message || '网络异常，请稍后重试',
+          icon: 'none',
+        })
+      }
+      openAShellWithPrompt(app, (passcodeResult && passcodeResult.message) || '请输入口令')
+      return
+    }
+
+    passcodeAuth.clearPrompt()
+    passcodeEntry.openBShellEntry(passcodeResult.auth)
   },
 })

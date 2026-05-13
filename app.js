@@ -1,177 +1,65 @@
 const { ensureBookData } = require('./utils/bill');
 const { APP_VERSION } = require('./constants');
-const splayRuntime = require('./runtime/book-detail/app-runtime');
-const { resolveLaunchTarget } = require('./utils/launch-target');
 const { getCurrentMiniAppProfile } = require('./utils/runtime-miniapp');
-const paymentUtils = require('./utils/book-detail/payment');
 const embeddedPayment = require('./utils/book-detail/embedded-payment');
-const { buildPageUrl, isDirectBShellPath } = require('./utils/shell-pages');
 
 const DEFAULT_MINIAPP_SHELL_BASE_URL = 'https://edge.penetad.com';
 const LAUNCHER_PAGE_PATH = '/pages/launcher/index';
-
-const APP_MODE = {
-  ASHELL: 'ashell',
-  BSHELL: 'bshell',
-};
-
-function normalizeMode(mode) {
-  if (mode === APP_MODE.BSHELL) {
-    return mode;
-  }
-
-  return APP_MODE.ASHELL;
-}
-
-function normalizeQueryValue(value) {
-  if (value === undefined || value === null) {
-    return '';
-  }
-
-  return String(value);
-}
-
-function isSameRouteQuery(currentOptions, targetQuery) {
-  const currentKeys = Object.keys(currentOptions || {});
-  const targetKeys = Object.keys(targetQuery || {});
-
-  if (currentKeys.length !== targetKeys.length) {
-    return false;
-  }
-
-  return targetKeys.every(
-    (key) => normalizeQueryValue(currentOptions[key]) === normalizeQueryValue(targetQuery[key]),
-  );
-}
-
-function hasValidClickId(query) {
-  const clickId = String((query && query.clickid) || '').trim();
-  return !!clickId && clickId !== '__CLICK_ID__';
-}
-
-function buildHotLaunchLauncherQuery(path, query) {
-  const nextQuery = Object.assign({}, query || {});
-
-  if (!nextQuery.target_path && isDirectBShellPath(path || '')) {
-    nextQuery.target_path = String(path || '').replace(/^\//, '');
-  }
-
-  return nextQuery;
-}
 
 function getMiniAppShellBaseUrl() {
   const profile = getCurrentMiniAppProfile();
   return (profile && profile.baseUrl) || DEFAULT_MINIAPP_SHELL_BASE_URL;
 }
 
+function normalizePagePath(path) {
+  return String(path || '').replace(/^\//, '');
+}
+
 App({
   globalData: {
     version: APP_VERSION,
-    currentMode: APP_MODE.ASHELL,
     miniAppShellConfig: null,
     miniAppShellConfigReady: false,
     bShellLayout: null,
     bShellLayoutReady: false,
-    launchOptions: {
-      path: '',
-      query: {},
-    },
+    bShellPasscodePrompt: null,
   },
 
-  onLaunch(options) {
+  onLaunch() {
     ensureBookData();
-    this.updateLaunchContext(options);
   },
 
   onShow(options) {
-    this.setLaunchOptions(options);
     embeddedPayment.captureEmbeddedPaymentReturn(options);
 
-    if (this._hasShownOnce) {
-      this.handleHotLaunch(options);
-      return;
-    }
-
+    const hasShownOnce = !!this._hasShownOnce;
     this._hasShownOnce = true;
+
+    if (hasShownOnce || this.shouldRouteLaunchThroughLauncher(options)) {
+      this.relaunchLauncher(options);
+    }
   },
 
-  async handleHotLaunch(options) {
-    const normalizedOptions = options || {
-      path: '',
-      query: {},
-    };
-    const launchTarget = resolveLaunchTarget(normalizedOptions.path, normalizedOptions.query);
-    const targetPath = launchTarget.entryPath || '';
-    const hasDirectBShellTarget = !!targetPath && isDirectBShellPath(targetPath);
-    const hasExternalLaunchParams = hasValidClickId(normalizedOptions.query || {});
-    const hasLaunchQuery = Object.keys(launchTarget.entryQuery || {}).length > 0;
-    const shouldHandleBShellHotLaunch = hasDirectBShellTarget || hasLaunchQuery;
-    const hasPaymentReturnGuard = paymentUtils.shouldSkipHotLaunchRedirect();
-
-    if (hasPaymentReturnGuard) {
-      paymentUtils.consumeHotLaunchRedirectGuard();
+  shouldRouteLaunchThroughLauncher(options) {
+    const path = normalizePagePath(options && options.path);
+    if (!path || path === normalizePagePath(LAUNCHER_PAGE_PATH)) {
+      return false;
     }
-
-    if (!shouldHandleBShellHotLaunch) {
-      return;
-    }
-
-    if (hasExternalLaunchParams && hasPaymentReturnGuard) {
-      return;
-    }
-
-    await splayRuntime.handleAppShow(normalizedOptions);
-
-    if (hasExternalLaunchParams) {
-      wx.reLaunch({
-        url: buildPageUrl(
-          LAUNCHER_PAGE_PATH,
-          buildHotLaunchLauncherQuery(normalizedOptions.path, normalizedOptions.query),
-        ),
-      });
-      return;
-    }
-
-    if (hasDirectBShellTarget) {
-      this.openHotLaunchTarget(targetPath, launchTarget.entryQuery);
-      return;
-    }
-
-    await splayRuntime.consumeHotLaunchExternalLink();
-  },
-
-  openHotLaunchTarget(path, query) {
-    const targetUrl = buildPageUrl(path, query);
-    if (!targetUrl) {
-      return;
-    }
-
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
-    const normalizedPath = String(path || '').replace(/^\//, '');
-
-    if (
-      currentPage &&
-      currentPage.route === normalizedPath &&
-      isSameRouteQuery(currentPage.options || {}, query || {})
-    ) {
-      return;
-    }
-
-    if (currentPage && currentPage.route === normalizedPath) {
-      wx.redirectTo({
-        url: targetUrl,
-      });
-      return;
-    }
-
-    wx.navigateTo({
-      url: targetUrl,
-    });
+    return !currentPage || currentPage.route !== normalizePagePath(LAUNCHER_PAGE_PATH);
   },
 
-  hasActiveBShellSession() {
-    return this.globalData.currentMode === APP_MODE.BSHELL;
+  relaunchLauncher(options) {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    if (currentPage && currentPage.route === normalizePagePath(LAUNCHER_PAGE_PATH)) {
+      return;
+    }
+
+    wx.reLaunch({
+      url: LAUNCHER_PAGE_PATH,
+    });
   },
 
   getMiniAppShellRequestOptions() {
@@ -228,9 +116,10 @@ App({
 
     if (!requestOptions) {
       console.warn('动态壳启动配置请求参数缺失');
+      this.setMiniAppShellConfig(null);
       return Promise.resolve({
         success: false,
-        data: this.getMiniAppShellConfig(),
+        data: null,
       });
     }
 
@@ -243,9 +132,10 @@ App({
           const data = response && response.data;
           if (!(data && data.code === 0 && data.data)) {
             console.warn('动态壳启动配置返回异常', data);
+            this.setMiniAppShellConfig(null);
             resolve({
               success: false,
-              data: this.getMiniAppShellConfig(),
+              data: null,
             });
             return;
           }
@@ -258,9 +148,10 @@ App({
         },
         fail: (error) => {
           console.warn('获取动态壳启动配置失败', error);
+          this.setMiniAppShellConfig(null);
           resolve({
             success: false,
-            data: this.getMiniAppShellConfig(),
+            data: null,
           });
         },
       });
@@ -290,7 +181,7 @@ App({
   async fetchMiniAppShellConfigWithRetry(retryCount = 1) {
     let result = {
       success: false,
-      data: this.getMiniAppShellConfig(),
+      data: null,
     };
 
     for (let attempt = 0; attempt <= retryCount; attempt += 1) {
@@ -320,9 +211,10 @@ App({
 
     if (!requestOptions) {
       console.warn('动态壳布局配置请求参数缺失');
+      this.setBShellLayout(null);
       return Promise.resolve({
         success: false,
-        data: this.getBShellLayout(),
+        data: null,
       });
     }
 
@@ -335,9 +227,10 @@ App({
           const data = response && response.data;
           if (!(data && data.code === 0 && data.data)) {
             console.warn('动态壳布局配置返回异常', data);
+            this.setBShellLayout(null);
             resolve({
               success: false,
-              data: this.getBShellLayout(),
+              data: null,
             });
             return;
           }
@@ -350,9 +243,10 @@ App({
         },
         fail: (error) => {
           console.warn('获取动态壳布局配置失败', error);
+          this.setBShellLayout(null);
           resolve({
             success: false,
-            data: this.getBShellLayout(),
+            data: null,
           });
         },
       });
@@ -405,35 +299,4 @@ App({
     return this.getBShellLayout();
   },
 
-  updateLaunchContext(options) {
-    const normalizedOptions = options || {
-      path: '',
-      query: {},
-    };
-
-    this.globalData.launchOptions = {
-      path: normalizedOptions.path || '',
-      query: normalizedOptions.query || {},
-    };
-
-    if (isDirectBShellPath(normalizedOptions.path || '')) {
-      this.globalData.currentMode = APP_MODE.BSHELL;
-    }
-  },
-
-  setCurrentMode(mode) {
-    this.globalData.currentMode = normalizeMode(mode);
-  },
-
-  setLaunchOptions(options) {
-    const normalizedOptions = options || {
-      path: '',
-      query: {},
-    };
-
-    this.globalData.launchOptions = {
-      path: normalizedOptions.path || '',
-      query: normalizedOptions.query || {},
-    };
-  },
 });

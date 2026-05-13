@@ -9,14 +9,6 @@ const BSHELL_PAGE_PATHS = {
   forecast: '/pages/book-detail/forecast/index',
 }
 
-const LEGACY_PAGE_PATH_MAP = {
-  'pages/theater/index': BSHELL_PAGE_PATHS.theater,
-  'pages/follow/index': BSHELL_PAGE_PATHS.follow,
-  'pages/mine/index': BSHELL_PAGE_PATHS.mine,
-  'pages/recharge/index': BSHELL_PAGE_PATHS.recharge_record,
-  'pages/consume/index': BSHELL_PAGE_PATHS.consume_record,
-}
-
 function normalizePagePath(path) {
   return String(path || '').replace(/^\//, '')
 }
@@ -47,10 +39,6 @@ function buildBShellPageUrl(pageKey, query) {
   return buildPageUrl(getBShellPagePath(pageKey), query)
 }
 
-function isDirectBShellPath(path) {
-  return normalizePagePath(path).indexOf('pages/book-detail/') === 0
-}
-
 function resolveBShellTabItems(tabBarConfig) {
   return ((tabBarConfig && tabBarConfig.items) || [])
     .map((item) => {
@@ -66,28 +54,13 @@ function resolveBShellTabItems(tabBarConfig) {
     .filter(Boolean)
 }
 
-function resolveLegacyLink(link) {
-  const normalizedLink = String(link || '').replace(/^\//, '')
-  const [path, queryString] = normalizedLink.split('?')
-  const mappedPath = LEGACY_PAGE_PATH_MAP[path]
-
-  if (!mappedPath) {
-    return link
-  }
-
-  return `${mappedPath}${queryString ? `?${queryString}` : ''}`
-}
-
 module.exports = {
   BSHELL_HOME,
   BSHELL_PAGE_PATHS,
-  LEGACY_PAGE_PATH_MAP,
   normalizePagePath,
   buildQueryString,
   buildPageUrl,
   getBShellPagePath,
   buildBShellPageUrl,
-  isDirectBShellPath,
   resolveBShellTabItems,
-  resolveLegacyLink,
 }

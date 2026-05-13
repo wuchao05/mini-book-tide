@@ -20,10 +20,11 @@ When changing one shell, do not modify the other. Shared global styles in `app.w
 `pages/launcher/index` is the `entryPagePath`. On load it:
 
 1. Calls `{currentProfile.baseUrl}/miniapp/bootstrap?app={appIdentifier}` via `app.js → fetchMiniAppShellConfigWithRetry()` to get `{ mode: 'A' | 'B', tab_bar: {...} }`.
-2. Caches `mode` in storage key `APP_SHELL_MODE` (see `constants/index.js → STORAGE_KEYS`).
-3. `mode === 'B'` → also fetches `/miniapp/layout`, then `wx.reLaunch` into a `pages/book-detail/*` page (default `theater`). `mode === 'A'` → `wx.switchTab` to `/pages/home/index`.
+2. Does not cache `mode`; every cold launch and hot launch goes back through launcher and requests bootstrap again.
+3. `mode === 'B'` → fetches `/miniapp/layout` while validating the local B-shell passcode via `/miniapp/passcode/verify`. Missing, expired, invalid, or network-failed passcodes keep the user on `/pages/home/index` and show the passcode dialog. A valid passcode opens B-shell theater, or the returned album on the first successful validation for that passcode period.
+4. `mode === 'A'` → `wx.switchTab` to `/pages/home/index` and clears pending passcode prompts.
 
-`app.globalData.currentMode` is `'ashell'` or `'bshell'`. `utils/shell-pages.js` is the source of truth for B-shell page paths and legacy path remapping — use `buildBShellPageUrl(pageKey, query)` and `isDirectBShellPath(path)` rather than hard-coding paths.
+`utils/shell-pages.js` is the source of truth for B-shell page paths — use `buildBShellPageUrl(pageKey, query)` rather than hard-coding paths.
 
 ## Multi-mini-app profile system
 

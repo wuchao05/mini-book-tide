@@ -17,7 +17,7 @@ createBShellPage({
   },
 
   async onShow() {
-    await splayRuntime.ensureStarted(getApp().globalData.launchOptions)
+    await splayRuntime.ensureStarted()
     await this.syncPageConfig()
     const success = await auth.ensureLogin()
     if (!success) {

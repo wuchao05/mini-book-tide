@@ -31,7 +31,6 @@ function getPopSkuInfo(albumId) {
     data: {
       pop_id: 'iaa_click_unlock_album',
       platform: getSystemPlatform(),
-      account_index: appStore.state.accountIndex,
       album_id: albumId || '',
     },
   })
@@ -227,14 +226,6 @@ function getHistoryList(data) {
   })
 }
 
-function reportClick(data) {
-  return request({
-    url: '/click/report',
-    method: 'GET',
-    data,
-  })
-}
-
 function getSystemPlatform() {
   const systemInfo = wx.getSystemInfoSync()
   const platform = String(systemInfo.platform || '').toLowerCase()
@@ -273,5 +264,4 @@ module.exports = {
   getConsumeRecord,
   getCollectionList,
   getHistoryList,
-  reportClick,
 }

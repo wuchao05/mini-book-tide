@@ -2,7 +2,6 @@ const env = require('../../config/book-detail/env');
 const appStore = require('../../stores/book-detail/app-store');
 const userStore = require('../../stores/book-detail/user-store');
 const auth = require('../../utils/book-detail/auth');
-const contentEntry = require('../../utils/book-detail/content-entry');
 const platform = require('../../utils/book-detail/platform');
 const CommonApi = require('../../services/book-detail/api/common');
 const { getWeixinMiniProgramConfig } = require('../../config/book-detail/wechat-config');
@@ -14,18 +13,11 @@ const runtimeState = {
   prepared: false,
 };
 
-function hasValidClickId(query) {
-  const clickId = String((query && query.clickid) || '').trim();
-  return !!clickId && clickId !== '__CLICK_ID__';
-}
-
 function getDefaultConfig(appid) {
   return getWeixinMiniProgramConfig(appid) || getWeixinMiniProgramConfig(env.appId) || {};
 }
 
-async function bootstrap(options) {
-  handleStartupParams(options, true);
-
+async function bootstrap() {
   const appid = getMiniProgramAppId();
   const config = getDefaultConfig(appid);
 
@@ -65,12 +57,6 @@ function buildH5FeedParams(page, pageSize) {
     page,
     page_size: pageSize,
     app: appStore.state.appIdentifier,
-    click_id: (appStore.state.startParam && appStore.state.startParam.clickid) || '',
-    promotion_id:
-      (appStore.state.startParam &&
-        (appStore.state.startParam.promotionid || appStore.state.startParam.promotion_id)) ||
-      '',
-    account_index: appStore.state.accountIndex || '',
   };
 }
 
@@ -80,9 +66,6 @@ function buildH5FeedCachePatch(params, list) {
     page: params.page,
     pageSize: params.page_size,
     app: params.app || '',
-    clickId: params.click_id || '',
-    promotionId: params.promotion_id || '',
-    accountIndex: params.account_index || '',
     list: list || [],
   };
 }
@@ -109,9 +92,6 @@ async function syncH5PageSwitch(options = {}) {
         patch.h5FeedCache = Object.assign({}, appStore.state.h5FeedCache, {
           ready: false,
           app: params.app || '',
-          clickId: params.click_id || '',
-          promotionId: params.promotion_id || '',
-          accountIndex: params.account_index || '',
         });
       }
 
@@ -132,97 +112,21 @@ function getMiniProgramAppId() {
   }
 }
 
-function handleStartupParams(options, isHotLaunch) {
-  const query = (options && options.query) || {};
-  const isFromExternalLink = hasValidClickId(query);
-  const hasQuery = !!query && Object.keys(query).length > 0;
-
-  if (!isHotLaunch) {
-    appStore.update({
-      isFromExternalLink,
-      hasProcessedExternalLink: false,
-      startParam: query,
-      accountIndex: query.account_index || '',
-    });
-    return;
-  }
-
-  appStore.update({
-    isHotLaunch: hasQuery,
-    isFromExternalLink,
-    startParam: query,
-    accountIndex: query.account_index || '',
-    hasProcessedExternalLink: false,
-  });
-}
-
-async function consumeHotLaunchExternalLink() {
-  if (
-    !appStore.state.isHotLaunch ||
-    !appStore.state.isFromExternalLink ||
-    appStore.state.hasProcessedExternalLink
-  ) {
-    return false;
-  }
-
-  appStore.update({
-    hasProcessedExternalLink: true,
-  });
-
-  await auth.ensureLogin();
-
-  const startParam = appStore.state.startParam || {};
-  const directAlbumId = Number(startParam.album_id || 0);
-
-  if (directAlbumId) {
-    contentEntry.openAlbum(directAlbumId, {
-      replaceCurrent: true,
-    });
-    return true;
-  }
-
-  if (!startParam.id) {
-    return false;
-  }
-
-  const reportResult = await contentEntry.reportClick(startParam);
-  if (!reportResult) {
-    return false;
-  }
-
-  const targetAlbumId = appStore.state.enableH5Page
-    ? Number(reportResult.webview_album_id || reportResult.album_id || 0)
-    : Number(reportResult.album_id || 0);
-
-  if (targetAlbumId) {
-    contentEntry.openAlbum(targetAlbumId, {
-      replaceCurrent: true,
-    });
-    return true;
-  }
-
-  contentEntry.openAlbum(startParam.id, {
-    replaceCurrent: true,
-  });
-  return true;
-}
-
 module.exports = {
-  onLaunch(options) {
+  onLaunch() {
     appStore.update({
       platformInfo: platform.getPlatformInfo(),
     });
-    handleStartupParams(options, false);
   },
 
-  onShow(options) {
-    runtimeState.bootstrapPromise = bootstrap(options);
+  onShow() {
+    runtimeState.bootstrapPromise = bootstrap();
   },
 
-  ensureStarted(options) {
+  ensureStarted() {
     if (!runtimeState.prepared) {
-      this.onLaunch(options);
-      this.onShow(options);
+      this.onLaunch();
+      this.onShow();
       runtimeState.prepared = true;
     }
     return runtimeState.bootstrapPromise || Promise.resolve();
@@ -232,19 +136,4 @@ module.exports = {
     return runtimeState.bootstrapPromise || Promise.resolve();
   },
 
-  handleAppShow(options) {
-    if (!runtimeState.prepared) {
-      return this.ensureStarted(options);
-    }
-
-    handleStartupParams(options, true);
-    runtimeState.bootstrapPromise = Promise.resolve().then(() =>
-      syncH5PageSwitch({
-        withList: true,
-      }),
-    );
-    return runtimeState.bootstrapPromise;
-  },
-
-  consumeHotLaunchExternalLink,
 };

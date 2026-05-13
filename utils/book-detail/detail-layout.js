@@ -3,8 +3,6 @@ const {
   getBShellPagePath,
   resolveBShellTabItems,
 } = require('../shell-pages')
-const { STORAGE_KEYS } = require('../../constants')
-const { getStorage } = require('../storage')
 
 const LOCAL_TAB_BAR_ITEMS = {
   theater: {
@@ -432,8 +430,7 @@ function getTabBarConfig() {
 function isBShellMode() {
   const config = getBootstrapConfig()
   const apiMode = (config && config.mode) || ''
-  const cachedMode = getStorage(STORAGE_KEYS.SHELL_MODE, '')
-  return (apiMode || cachedMode) === 'B'
+  return apiMode === 'B'
 }
 
 function getDefaultTabBarItems() {

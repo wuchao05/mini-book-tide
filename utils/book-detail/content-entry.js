@@ -1,5 +1,4 @@
 const appStore = require('../../stores/book-detail/app-store')
-const CommonApi = require('../../services/book-detail/api/common')
 const { buildBShellPageUrl } = require('../shell-pages')
 
 function buildForecastUrl(albumId, options = {}) {
@@ -32,22 +31,6 @@ function showCannotPlayToast() {
       title: '当前内容暂时无法查看',
       icon: 'none',
     })
-}
-
-async function reportClick(data) {
-  try {
-    const response = await CommonApi.reportClick(data)
-    if (response.code === 0) {
-      return {
-        album_id: response.data.album_id || 0,
-        webview_album_id: response.data.webview_album_id || 0,
-      }
-    }
-    return null
-  } catch (error) {
-    void error
-    return null
-  }
 }
 
 function openAlbum(albumId, options = {}) {
@@ -91,7 +74,6 @@ function openAlbumNative(albumId, options = {}) {
 }
 
 module.exports = {
-  reportClick,
   openAlbum,
   openAlbumNative,
   buildForecastUrl,
