@@ -1,40 +1,41 @@
-const { STORAGE_KEYS } = require('../../constants')
-const { getStorage, setStorage, removeStorage } = require('../storage')
-const { getCurrentMiniAppProfile } = require('../runtime-miniapp')
+const { STORAGE_KEYS } = require("../../constants");
+const { getStorage, setStorage, removeStorage } = require("../storage");
+const { getCurrentMiniAppProfile } = require("../runtime-miniapp");
 
-const DEFAULT_BASE_URL = 'https://edge.penetad.com'
+const DEFAULT_BASE_URL = "https://edge.penetad.com";
+const MAX_PASSCODE_FAILURE_COUNT = 3;
 
 function getRequestContext() {
-  const profile = getCurrentMiniAppProfile() || {}
+  const profile = getCurrentMiniAppProfile() || {};
   return {
-    appIdentifier: profile.appIdentifier || '',
+    appIdentifier: profile.appIdentifier || "",
     baseUrl: profile.baseUrl || DEFAULT_BASE_URL,
-  }
+  };
 }
 
 function normalizeExpiresAt(value) {
-  if (value === undefined || value === null || value === '') {
-    return 0
+  if (value === undefined || value === null || value === "") {
+    return 0;
   }
 
-  const numericValue = Number(value)
+  const numericValue = Number(value);
   if (Number.isFinite(numericValue) && numericValue > 0) {
-    return numericValue
+    return numericValue < 1000000000000 ? numericValue * 1000 : numericValue;
   }
 
-  const parsedTime = new Date(value).getTime()
-  return Number.isFinite(parsedTime) ? parsedTime : 0
+  const parsedTime = new Date(value).getTime();
+  return Number.isFinite(parsedTime) ? parsedTime : 0;
 }
 
 function normalizeAuth(rawAuth) {
-  if (!rawAuth || typeof rawAuth !== 'object') {
-    return null
+  if (!rawAuth || typeof rawAuth !== "object") {
+    return null;
   }
 
-  const passcode = String(rawAuth.passcode || '').trim()
-  const expiresAt = normalizeExpiresAt(rawAuth.expiresAt)
+  const passcode = String(rawAuth.passcode || "").trim();
+  const expiresAt = normalizeExpiresAt(rawAuth.expiresAt);
   if (!passcode || !expiresAt) {
-    return null
+    return null;
   }
 
   return {
@@ -42,212 +43,264 @@ function normalizeAuth(rawAuth) {
     expiresAt,
     albumId: Number(rawAuth.albumId || 0) || 0,
     hasOpenedInitialAlbum: !!rawAuth.hasOpenedInitialAlbum,
-  }
+  };
 }
 
 function readAuth() {
-  return normalizeAuth(getStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, null))
+  return normalizeAuth(getStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, null));
 }
 
 function isAuthExpired(auth) {
-  return !auth || !auth.expiresAt || auth.expiresAt <= Date.now()
+  return !auth || !auth.expiresAt || auth.expiresAt <= Date.now();
 }
 
 function readValidAuth() {
-  const auth = readAuth()
+  const auth = readAuth();
   if (!auth) {
-    return null
+    return null;
   }
 
   if (isAuthExpired(auth)) {
-    clearAuth()
-    return null
+    clearAuth();
+    return null;
   }
 
-  return auth
+  return auth;
 }
 
 function saveVerifiedAuth(inputPasscode, data) {
-  const previousAuth = readAuth()
-  const passcode = String((data && data.passcode) || inputPasscode || '').trim()
-  const expiresAt = normalizeExpiresAt(data && data.expires_at)
-  const albumId = Number((data && data.album_id) || 0) || 0
+  const previousAuth = readAuth();
+  const passcode = String(
+    (data && data.passcode) || inputPasscode || "",
+  ).trim();
+  const expiresAt = normalizeExpiresAt(data && data.expires_at);
+  const albumId = Number((data && data.album_id) || 0) || 0;
 
   if (!passcode || !expiresAt) {
-    clearAuth()
-    return null
+    clearAuth();
+    return null;
   }
 
   const shouldKeepOpenedState =
     previousAuth &&
     previousAuth.passcode === passcode &&
     previousAuth.hasOpenedInitialAlbum &&
-    !isAuthExpired(previousAuth)
+    !isAuthExpired(previousAuth);
   const nextAuth = {
     passcode,
     expiresAt,
     albumId,
     hasOpenedInitialAlbum: !!shouldKeepOpenedState,
-  }
+  };
 
-  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, nextAuth)
-  return nextAuth
+  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, nextAuth);
+  return nextAuth;
 }
 
 function markInitialAlbumOpened() {
-  const auth = readAuth()
+  const auth = readAuth();
   if (!auth) {
-    return null
+    return null;
   }
 
   const nextAuth = Object.assign({}, auth, {
     hasOpenedInitialAlbum: true,
-  })
-  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, nextAuth)
-  return nextAuth
+  });
+  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH, nextAuth);
+  return nextAuth;
 }
 
 function clearAuth() {
-  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH)
+  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_AUTH);
+}
+
+function normalizeBlockState(rawState) {
+  const state = rawState && typeof rawState === "object" ? rawState : {};
+  const failureCount = Math.max(0, Number(state.failureCount || 0) || 0);
+
+  return {
+    failureCount,
+    blocked:
+      state.blocked === true || failureCount >= MAX_PASSCODE_FAILURE_COUNT,
+    updatedAt: Number(state.updatedAt || 0) || 0,
+  };
+}
+
+function readBlockState() {
+  return normalizeBlockState(
+    getStorage(STORAGE_KEYS.BSHELL_PASSCODE_BLOCK, null),
+  );
+}
+
+function isPromptBlocked() {
+  return readBlockState().blocked;
+}
+
+function recordPasscodeFailure() {
+  const currentState = readBlockState();
+  const failureCount = currentState.failureCount + 1;
+  const nextState = {
+    failureCount,
+    blocked: failureCount >= MAX_PASSCODE_FAILURE_COUNT,
+    updatedAt: Date.now(),
+  };
+
+  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_BLOCK, nextState);
+  return nextState;
+}
+
+function clearPasscodeFailures() {
+  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_BLOCK);
 }
 
 function requestPrompt(message) {
+  if (isPromptBlocked()) {
+    clearPrompt();
+    return;
+  }
+
   const promptState = {
     visible: true,
-    message: message || '',
+    message: message || "",
     createdAt: Date.now(),
-  }
+  };
 
   try {
-    const app = getApp()
+    const app = getApp();
     if (app && app.globalData) {
-      app.globalData.bShellPasscodePrompt = promptState
+      app.globalData.bShellPasscodePrompt = promptState;
     }
   } catch (error) {
-    void error
+    void error;
   }
 
-  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING, promptState)
+  setStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING, promptState);
 }
 
 function consumePrompt() {
-  let promptState = null
+  if (isPromptBlocked()) {
+    clearPrompt();
+    return null;
+  }
+
+  let promptState = null;
 
   try {
-    const app = getApp()
+    const app = getApp();
     if (app && app.globalData && app.globalData.bShellPasscodePrompt) {
-      promptState = app.globalData.bShellPasscodePrompt
-      app.globalData.bShellPasscodePrompt = null
+      promptState = app.globalData.bShellPasscodePrompt;
+      app.globalData.bShellPasscodePrompt = null;
     }
   } catch (error) {
-    void error
+    void error;
   }
 
   if (!promptState) {
-    promptState = getStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING, null)
+    promptState = getStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING, null);
   }
 
-  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING)
-  return promptState && promptState.visible ? promptState : null
+  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING);
+  return promptState && promptState.visible ? promptState : null;
 }
 
 function clearPrompt() {
   try {
-    const app = getApp()
+    const app = getApp();
     if (app && app.globalData) {
-      app.globalData.bShellPasscodePrompt = null
+      app.globalData.bShellPasscodePrompt = null;
     }
   } catch (error) {
-    void error
+    void error;
   }
 
-  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING)
+  removeStorage(STORAGE_KEYS.BSHELL_PASSCODE_PROMPT_PENDING);
 }
 
 function verifyPasscode(passcode) {
-  const normalizedPasscode = String(passcode || '').trim()
-  const context = getRequestContext()
+  const normalizedPasscode = String(passcode || "").trim();
+  const context = getRequestContext();
 
   if (!normalizedPasscode) {
     return Promise.resolve({
       success: false,
-      reason: 'empty',
-      message: '请输入口令',
-    })
+      reason: "empty",
+      message: "请输入口令",
+    });
   }
 
   if (!context.appIdentifier) {
     return Promise.resolve({
       success: false,
-      reason: 'missing_app',
-      message: '小程序配置缺失，请稍后重试',
-    })
+      reason: "missing_app",
+      message: "小程序配置缺失，请稍后重试",
+    });
   }
 
   return new Promise((resolve) => {
     wx.request({
       url: `${context.baseUrl}/miniapp/passcode/verify`,
-      method: 'POST',
+      method: "POST",
       timeout: 10000,
       data: {
         app: context.appIdentifier,
         passcode: normalizedPasscode,
       },
       header: {
-        'content-type': 'application/x-www-form-urlencoded',
+        "content-type": "application/x-www-form-urlencoded",
       },
       success(response) {
-        const result = response && response.data ? response.data : {}
-        const data = result.data || {}
+        const result = response && response.data ? response.data : {};
+        const data = result.data || {};
 
         if (result.code === 0 && data.valid === true) {
-          const auth = saveVerifiedAuth(normalizedPasscode, data)
+          const auth = saveVerifiedAuth(normalizedPasscode, data);
           if (auth) {
+            clearPasscodeFailures();
             resolve({
               success: true,
               auth,
-              message: '',
-            })
-            return
+              message: "",
+            });
+            return;
           }
         }
 
-        clearAuth()
+        clearAuth();
         resolve({
           success: false,
-          reason: 'invalid',
-          message: result.message || '口令无效，请重新输入',
-        })
+          reason: "invalid",
+          message: result.message || "口令无效",
+        });
       },
       fail(error) {
-        console.warn('校验 B 壳口令失败', error)
+        console.warn("校验 B 壳口令失败", error);
         resolve({
           success: false,
-          reason: 'network',
-          message: '网络异常，请稍后重试',
-        })
+          reason: "network",
+          message: "网络异常，请稍后重试",
+        });
       },
-    })
-  })
+    });
+  });
 }
 
 async function verifyStoredPasscode() {
-  const auth = readValidAuth()
+  const auth = readValidAuth();
 
   if (!auth) {
     return {
       success: false,
-      reason: 'missing',
-      message: '请输入口令',
-    }
+      reason: "missing",
+      message: "请输入口令",
+    };
   }
 
-  const result = await verifyPasscode(auth.passcode)
+  const result = await verifyPasscode(auth.passcode);
   if (!result.success) {
-    return result
+    return result;
   }
 
-  return result
+  return result;
 }
 
 module.exports = {
@@ -256,9 +309,13 @@ module.exports = {
   saveVerifiedAuth,
   markInitialAlbumOpened,
   clearAuth,
+  readBlockState,
+  isPromptBlocked,
+  recordPasscodeFailure,
+  clearPasscodeFailures,
   requestPrompt,
   consumePrompt,
   clearPrompt,
   verifyPasscode,
   verifyStoredPasscode,
-}
+};

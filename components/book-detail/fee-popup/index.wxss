@@ -5,22 +5,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(18, 22, 32, 0.5);
+  backdrop-filter: blur(10rpx);
 }
 
 .fee-popup {
   width: 600rpx;
-  padding: 30rpx;
-  background: #ffffff;
-  border-radius: 24rpx;
+  padding: 34rpx 32rpx 32rpx;
+  background: linear-gradient(180deg, #f7ffff 0%, #ffffff 46%, #f7ffff 100%);
+  border: 1rpx solid rgba(60, 207, 207, 0.24);
+  border-radius: 28rpx;
+  box-shadow: 0 28rpx 80rpx rgba(18, 22, 32, 0.18);
 }
 
 .fee-popup__title {
-  margin-bottom: 20rpx;
-  font-size: 30rpx;
-  font-weight: 700;
+  position: relative;
+  margin-bottom: 26rpx;
+  padding-bottom: 18rpx;
+  font-size: 32rpx;
+  font-weight: 800;
   color: #121620;
   text-align: center;
+}
+
+.fee-popup__title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 72rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #3ccfcf 0%, #2ebaba 100%);
+  transform: translateX(-50%);
 }
 
 .fee-popup__body {
@@ -28,18 +45,27 @@
 }
 
 .fee-popup__item {
-  margin-bottom: 15rpx;
+  margin-bottom: 16rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 18rpx;
   font-size: 26rpx;
   line-height: 1.5;
-  color: #666666;
+  color: #4c5963;
+  background: rgba(60, 207, 207, 0.08);
+}
+
+.fee-popup__item:last-child {
+  margin-bottom: 0;
 }
 
 .fee-popup__btn {
   height: 80rpx;
   font-size: 30rpx;
+  font-weight: 700;
   line-height: 80rpx;
   color: #ffffff;
   text-align: center;
-  background: linear-gradient(90deg, #ff5934 0%, #ffc700 100%);
+  background: linear-gradient(90deg, #3ccfcf 0%, #2ebaba 100%);
   border-radius: 40rpx;
+  box-shadow: 0 14rpx 32rpx rgba(60, 207, 207, 0.28);
 }

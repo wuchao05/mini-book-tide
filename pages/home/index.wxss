@@ -173,69 +173,224 @@
 .passcode-gate__mask {
   position: absolute;
   inset: 0;
-  background: rgba(20, 28, 48, 0.48);
+  background: rgba(12, 18, 32, 0.56);
   backdrop-filter: blur(10rpx);
+  animation: passcode-mask-in 420ms ease-out both;
+}
+
+.passcode-gate__celebration {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 650rpx;
+  height: 430rpx;
+  pointer-events: none;
+  transform: translate(-50%, -58%);
+}
+
+.passcode-gate__burst {
+  position: absolute;
+  width: 150rpx;
+  height: 150rpx;
+  opacity: 0;
+  animation: passcode-burst-visible 940ms ease-out both;
+}
+
+.passcode-gate__burst--left {
+  left: 18rpx;
+  top: 42rpx;
+  animation-delay: 120ms;
+}
+
+.passcode-gate__burst--right {
+  right: 8rpx;
+  top: 8rpx;
+  transform: rotate(18deg);
+  animation-delay: 220ms;
+}
+
+.passcode-gate__spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 999rpx;
+  opacity: 0;
+}
+
+.passcode-gate__spark--1 {
+  background: #ffd166;
+  animation: passcode-spark-1 880ms ease-out 160ms both;
+}
+
+.passcode-gate__spark--2 {
+  background: #4cc9f0;
+  animation: passcode-spark-2 880ms ease-out 170ms both;
+}
+
+.passcode-gate__spark--3 {
+  background: #ff6b6b;
+  animation: passcode-spark-3 880ms ease-out 185ms both;
+}
+
+.passcode-gate__spark--4 {
+  background: #80ed99;
+  animation: passcode-spark-4 880ms ease-out 200ms both;
+}
+
+.passcode-gate__spark--5 {
+  background: #f15bb5;
+  animation: passcode-spark-5 880ms ease-out 215ms both;
+}
+
+.passcode-gate__spark--6 {
+  background: #ffffff;
+  animation: passcode-spark-6 880ms ease-out 230ms both;
 }
 
 .passcode-gate__panel {
   position: relative;
-  width: 100%;
-  max-width: 620rpx;
-  padding: 44rpx 36rpx 36rpx;
-  border-radius: 28rpx;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 249, 255, 0.98) 100%);
-  border: 1rpx solid rgba(38, 93, 255, 0.12);
-  box-shadow: 0 28rpx 80rpx rgba(20, 28, 48, 0.2);
-  animation: passcode-panel-rise 220ms ease-out both;
+  width: 460rpx;
+  padding: 38rpx 34rpx 34rpx;
+  border-radius: 34rpx;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 252, 255, 0.96) 100%);
+  border: 1rpx solid rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 32rpx 90rpx rgba(8, 16, 34, 0.26),
+    0 0 0 10rpx rgba(255, 255, 255, 0.08);
+  animation: passcode-panel-entrance 640ms cubic-bezier(0.16, 1.22, 0.28, 1) both;
 }
 
-.passcode-gate__mark {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 22rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 34rpx;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-  box-shadow: 0 16rpx 34rpx rgba(38, 93, 255, 0.22);
+.passcode-gate__panel::before {
+  content: '';
+  position: absolute;
+  left: 34rpx;
+  right: 34rpx;
+  top: 0;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, rgba(38, 93, 255, 0.5), rgba(255, 209, 102, 0.72), transparent);
+  animation: passcode-shine 900ms ease-out 160ms both;
+}
+
+.passcode-gate__panel::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18rpx;
+  width: 180rpx;
+  height: 26rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.72);
+  filter: blur(12rpx);
+  opacity: 0.72;
+  transform: translateX(-50%);
 }
 
 .passcode-gate__title {
-  margin-top: 28rpx;
-  font-size: 36rpx;
-  font-weight: 800;
-  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
 }
 
-.passcode-gate__desc {
-  margin-top: 14rpx;
+.passcode-gate__hint {
+  position: relative;
+  z-index: 1;
+  width: 324rpx;
+  margin: 14rpx auto 0;
   font-size: 24rpx;
-  line-height: 1.7;
+  line-height: 1.45;
   color: var(--text-secondary);
+  text-align: center;
 }
 
-.passcode-gate__field {
-  margin-top: 30rpx;
-  min-height: 96rpx;
-  padding: 0 26rpx;
+.passcode-gate__code-row {
+  position: relative;
+  z-index: 1;
+  width: 324rpx;
+  height: 104rpx;
+  margin: 28rpx auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 18rpx;
+}
+
+.passcode-gate__digit {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 96rpx;
+  height: 104rpx;
+  min-height: 104rpx;
   border-radius: 24rpx;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border: 1rpx solid rgba(38, 93, 255, 0.12);
+  justify-content: center;
+  background: #f7f8fc;
+  border: 1rpx solid rgba(17, 24, 39, 0.08);
+  color: #111827;
+  font-size: 42rpx;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.9), 0 10rpx 24rpx rgba(16, 24, 40, 0.06);
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.passcode-gate__input {
-  flex: 1;
-  min-width: 0;
-  font-size: 30rpx;
+.passcode-gate__digit--filled {
+  background: #ffffff;
+  border-color: rgba(38, 93, 255, 0.38);
+  box-shadow: 0 14rpx 30rpx rgba(38, 93, 255, 0.14), inset 0 1rpx 0 rgba(255, 255, 255, 0.96);
+  transform: translateY(-2rpx);
+}
+
+.passcode-gate__digit--active {
+  border-color: rgba(38, 93, 255, 0.48);
+  box-shadow: 0 16rpx 36rpx rgba(38, 93, 255, 0.16), inset 0 1rpx 0 rgba(255, 255, 255, 0.96);
+}
+
+.passcode-gate__digit--active::after {
+  content: '';
+  width: 2rpx;
+  height: 42rpx;
+  border-radius: 999rpx;
+  background: var(--brand);
+  animation: passcode-caret 900ms steps(2, start) infinite;
+}
+
+.passcode-gate__digit--filled::after {
+  display: none;
+}
+
+.passcode-gate__native-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 324rpx;
+  height: 104rpx;
+  min-height: 104rpx;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  opacity: 0.01;
+  color: transparent;
+  font-size: 42rpx;
+  line-height: 104rpx;
+  background: transparent;
+  caret-color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .passcode-gate__error {
-  margin-top: 18rpx;
+  position: relative;
+  z-index: 1;
+  width: 324rpx;
+  margin: 18rpx auto 0;
+  box-sizing: border-box;
   padding: 16rpx 20rpx;
   border-radius: 18rpx;
   font-size: 24rpx;
@@ -244,38 +399,185 @@
   background: rgba(244, 107, 69, 0.1);
 }
 
-.passcode-gate__button {
-  width: 100%;
-  min-height: 92rpx;
-  margin-top: 26rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  color: #ffffff;
-  font-size: 28rpx;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+.passcode-gate__status {
+  position: relative;
+  z-index: 1;
+  width: 324rpx;
+  margin: 18rpx auto 0;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
-.passcode-gate__button::after {
-  border: 0;
-}
-
-.passcode-gate__button[disabled] {
-  opacity: 0.72;
-}
-
-@keyframes passcode-panel-rise {
+@keyframes passcode-mask-in {
   from {
-    transform: translateY(24rpx);
     opacity: 0;
   }
 
   to {
-    transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes passcode-panel-entrance {
+  0% {
+    transform: translateY(60rpx) scale(0.82);
+    opacity: 0;
+  }
+
+  58% {
+    transform: translateY(-10rpx) scale(1.035);
+    opacity: 1;
+  }
+
+  76% {
+    transform: translateY(4rpx) scale(0.992);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes passcode-shine {
+  from {
+    transform: translateX(-80rpx);
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(80rpx);
+    opacity: 0.7;
+  }
+}
+
+@keyframes passcode-burst-visible {
+  0%,
+  12% {
+    opacity: 0;
+  }
+
+  18%,
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-1 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -118rpx) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-2 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(74rpx, -82rpx) scale(0.74);
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-3 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(94rpx, 32rpx) scale(0.68);
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-4 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-12rpx, 104rpx) scale(0.72);
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-5 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-110rpx, 36rpx) scale(0.7);
+    opacity: 0;
+  }
+}
+
+@keyframes passcode-spark-6 {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-92rpx, -88rpx) scale(0.76);
+    opacity: 0;
   }
 }
 

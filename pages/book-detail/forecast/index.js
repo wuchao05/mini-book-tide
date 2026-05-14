@@ -73,7 +73,15 @@ createBShellPage({
   onUnload() {
     this.pauseCurrentVideo()
     this.clearCaptureProtection()
-    wx.setStorageSync(THEATER_RESUME_FLOAT_STORAGE_KEY, 1)
+    this.enableTheaterResumeFloat()
+  },
+
+  enableTheaterResumeFloat() {
+    try {
+      wx.setStorageSync(THEATER_RESUME_FLOAT_STORAGE_KEY, 1)
+    } catch (error) {
+      console.warn('记录剧场续看浮框状态失败', error)
+    }
   },
 
   setupCaptureProtection() {
@@ -545,6 +553,9 @@ createBShellPage({
   },
 
   handleBack() {
+    this.enableTheaterResumeFloat()
+    this.reportCurrentHistory()
+
     appStore.update({
       pendingTheaterTab: 1,
     })

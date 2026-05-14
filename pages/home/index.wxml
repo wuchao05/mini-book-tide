@@ -107,30 +107,52 @@
 
 <view wx:if="{{passcodeDialogVisible}}" class="passcode-gate" catchtouchmove="noop">
   <view class="passcode-gate__mask"></view>
+  <view class="passcode-gate__celebration">
+    <view class="passcode-gate__burst passcode-gate__burst--left">
+      <view class="passcode-gate__spark passcode-gate__spark--1"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--2"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--3"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--4"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--5"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--6"></view>
+    </view>
+    <view class="passcode-gate__burst passcode-gate__burst--right">
+      <view class="passcode-gate__spark passcode-gate__spark--1"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--2"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--3"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--4"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--5"></view>
+      <view class="passcode-gate__spark passcode-gate__spark--6"></view>
+    </view>
+  </view>
   <view class="passcode-gate__panel">
-    <view class="passcode-gate__mark">B</view>
-    <view class="passcode-gate__title">输入口令继续观看</view>
-    <view class="passcode-gate__desc">当前内容需要验证口令，验证通过后会自动进入短剧内容。</view>
-    <view class="passcode-gate__field">
+    <view class="passcode-gate__title">输入口令</view>
+    <view class="passcode-gate__hint">解锁更多精彩内容</view>
+    <view class="passcode-gate__code-row" bindtap="focusPasscodeInput">
+      <view
+        wx:for="{{passcodeDigits}}"
+        wx:key="index"
+        class="passcode-gate__digit {{item ? 'passcode-gate__digit--filled' : ''}} {{passcodeActiveIndex === index && passcodeInputFocus && !passcodeSubmitting ? 'passcode-gate__digit--active' : ''}}"
+      >
+        {{item}}
+      </view>
       <input
-        class="passcode-gate__input"
-        password="true"
-        placeholder="请输入口令"
+        class="passcode-gate__native-input"
+        maxlength="3"
+        type="number"
         value="{{passcodeValue}}"
+        focus="{{passcodeInputFocus}}"
+        cursor="{{passcodeValue.length}}"
+        cursor-color="transparent"
+        disabled="{{passcodeSubmitting}}"
         confirm-type="done"
+        cursor-spacing="24"
         bindinput="handlePasscodeInput"
         bindconfirm="submitPasscode"
+        bindblur="handlePasscodeBlur"
       />
     </view>
     <view wx:if="{{passcodeError}}" class="passcode-gate__error">{{passcodeError}}</view>
-    <button
-      class="passcode-gate__button"
-      loading="{{passcodeSubmitting}}"
-      disabled="{{passcodeSubmitting}}"
-      bindtap="submitPasscode"
-      hover-class="button-hover"
-    >
-      {{passcodeSubmitting ? '验证中...' : '验证并进入'}}
-    </button>
+    <view wx:if="{{passcodeSubmitting}}" class="passcode-gate__status">验证中...</view>
   </view>
 </view>

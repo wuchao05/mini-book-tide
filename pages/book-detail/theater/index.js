@@ -285,8 +285,7 @@ createBShellPage({
   },
 
   async syncResumeCard(loginSuccess = true) {
-    const shouldShowResumeCard =
-      loginSuccess && this.isResumeCardEnabled() && !!appStore.state.enableH5Page;
+    const shouldShowResumeCard = loginSuccess && this.isResumeCardEnabled();
 
     if (!shouldShowResumeCard) {
       this.clearResumeCard();

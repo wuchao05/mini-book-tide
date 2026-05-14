@@ -31,8 +31,10 @@
   padding: 0 36rpx;
   margin-top: 40rpx;
   font-size: 30rpx;
+  font-weight: 700;
   line-height: 88rpx;
   color: #ffffff;
-  background: linear-gradient(107deg, #ff5934 2%, #ffc700 100%);
+  background: linear-gradient(90deg, #3ccfcf 0%, #2ebaba 100%);
   border-radius: 20rpx;
+  box-shadow: 0 16rpx 34rpx rgba(46, 186, 186, 0.22);
 }
