@@ -2,20 +2,9 @@ const { ensureBookData } = require('./utils/bill');
 const { APP_VERSION } = require('./constants');
 const { getCurrentMiniAppProfile } = require('./utils/runtime-miniapp');
 const embeddedPayment = require('./utils/book-detail/embedded-payment');
-const passcodeAuth = require('./utils/book-detail/passcode-auth');
 
 const DEFAULT_MINIAPP_SHELL_BASE_URL = 'https://edge.penetad.com';
-const ASHELL_HOME_PAGE_PATH = '/pages/home/index';
 const LAUNCHER_PAGE_PATH = '/pages/launcher/index';
-const ASHELL_PAGE_PATHS = [
-  'pages/home/index',
-  'pages/add/index',
-  'pages/mine/index',
-  'pages/bill-detail/index',
-  'pages/bill-manage/index',
-  'pages/stats/index',
-  'pages/about/index',
-];
 
 function getMiniAppShellBaseUrl() {
   const profile = getCurrentMiniAppProfile();
@@ -24,10 +13,6 @@ function getMiniAppShellBaseUrl() {
 
 function normalizePagePath(path) {
   return String(path || '').replace(/^\//, '');
-}
-
-function isAShellPagePath(path) {
-  return ASHELL_PAGE_PATHS.indexOf(normalizePagePath(path)) !== -1;
 }
 
 function isLauncherPagePath(path) {
@@ -52,12 +37,6 @@ App({
   onShow(options) {
     embeddedPayment.captureEmbeddedPaymentReturn(options);
 
-    if (this.shouldBlockDirectNonAShellAccess(options)) {
-      this.clearBShellEntryAuthorization();
-      this.openAShellHome();
-      return;
-    }
-
     const hasShownOnce = !!this._hasShownOnce;
     this._hasShownOnce = true;
 
@@ -74,34 +53,6 @@ App({
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
     return !currentPage || currentPage.route !== normalizePagePath(LAUNCHER_PAGE_PATH);
-  },
-
-  shouldBlockDirectNonAShellAccess(options) {
-    const path = normalizePagePath(options && options.path);
-    if (!path || isAShellPagePath(path) || isLauncherPagePath(path)) {
-      return false;
-    }
-
-    const pages = getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    if (!currentPage || currentPage.route !== path) {
-      return true;
-    }
-
-    return !this.hasBShellEntryAuthorization();
-  },
-
-  openAShellHome() {
-    passcodeAuth.clearPrompt();
-
-    wx.switchTab({
-      url: ASHELL_HOME_PAGE_PATH,
-      fail() {
-        wx.reLaunch({
-          url: ASHELL_HOME_PAGE_PATH,
-        });
-      },
-    });
   },
 
   authorizeBShellEntry() {

@@ -4,6 +4,10 @@ const passcodeAuth = require('../../utils/book-detail/passcode-auth')
 const passcodeEntry = require('../../utils/book-detail/passcode-entry')
 
 function openAShellEntry(app, options = {}) {
+  if (app && typeof app.clearBShellEntryAuthorization === 'function') {
+    app.clearBShellEntryAuthorization()
+  }
+
   if (options.clearPrompt) {
     passcodeAuth.clearPrompt()
   }
