@@ -1,7 +1,6 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "ashell-fallback": "/components/ashell-fallback/index",
     "empty-state": "/components/book-detail/empty-state/index",
     "detail-tab-bar": "/components/book-detail/detail-tab-bar/index"
   }

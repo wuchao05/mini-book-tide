@@ -1,4 +1,3 @@
-<ashell-fallback wx:if="{{__ashellFallback}}" />
 <view wx:if="{{__shellReady}}" class="mine-page" style="background: {{pageBackground}};">
   <view class="mine-header">
     <image wx:if="{{headerConfig.bg_image}}" class="mine-header__bg" src="{{headerConfig.bg_image}}" mode="scaleToFill"></image>

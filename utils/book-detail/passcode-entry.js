@@ -5,6 +5,11 @@ const ASHELL_HOME = '/pages/home/index'
 const BSHELL_THEATER = '/pages/book-detail/theater/index'
 
 function openAShellWithPasscodePrompt(message) {
+  const app = getApp()
+  if (app && typeof app.clearBShellEntryAuthorization === 'function') {
+    app.clearBShellEntryAuthorization()
+  }
+
   passcodeAuth.requestPrompt(message || '请输入口令')
   wx.switchTab({
     url: ASHELL_HOME,
@@ -17,6 +22,11 @@ function openAShellWithPasscodePrompt(message) {
 }
 
 function openBShellEntry(auth) {
+  const app = getApp()
+  if (app && typeof app.authorizeBShellEntry === 'function') {
+    app.authorizeBShellEntry()
+  }
+
   const currentAuth = auth || passcodeAuth.readValidAuth()
   const albumId = Number(currentAuth && currentAuth.albumId)
 

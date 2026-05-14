@@ -1,4 +1,3 @@
-<ashell-fallback wx:if="{{__ashellFallback}}" />
 <view wx:if="{{__shellReady}}" class="forecast-page">
   <radar-panel
     id="radarPanel"

@@ -1,4 +1,3 @@
-<ashell-fallback wx:if="{{__ashellFallback}}" />
 <view wx:if="{{__shellReady}}" class="follow-page" style="background: {{pageBackground}};">
   <view wx:if="{{loading}}" class="follow-loading">加载中...</view>
 

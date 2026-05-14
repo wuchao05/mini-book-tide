@@ -2,32 +2,37 @@ const { disableMiniProgramShare } = require('../page')
 const passcodeAuth = require('./passcode-auth')
 const passcodeEntry = require('./passcode-entry')
 
-async function guardBShellLaunchAccess() {
+const ASHELL_HOME = '/pages/home/index'
+
+function openAShellHome() {
   const app = getApp()
-
-  if (!app) {
-    wx.reLaunch({ url: '/pages/launcher/index' })
-    return false
+  if (app && typeof app.clearBShellEntryAuthorization === 'function') {
+    app.clearBShellEntryAuthorization()
   }
+  passcodeAuth.clearPrompt()
 
-  const shellResult = app.fetchMiniAppShellConfigWithRetry
-    ? await app.fetchMiniAppShellConfigWithRetry(1)
-    : { success: false, data: null }
+  wx.switchTab({
+    url: ASHELL_HOME,
+    fail() {
+      wx.reLaunch({
+        url: ASHELL_HOME,
+      })
+    },
+  })
+}
 
-  if (!(shellResult.success && shellResult.data)) {
-    wx.showToast({
-      title: '网络异常，请稍后重试',
-      icon: 'none',
-    })
-    passcodeEntry.openAShellWithPasscodePrompt('网络异常，请稍后重试')
-    return false
-  }
+function hasControlledBShellEntry() {
+  const app = getApp()
+  return !!(
+    app &&
+    typeof app.hasBShellEntryAuthorization === 'function' &&
+    app.hasBShellEntryAuthorization()
+  )
+}
 
-  if (shellResult.data.mode !== 'B') {
-    passcodeAuth.clearPrompt()
-    wx.reLaunch({
-      url: '/pages/home/index',
-    })
+async function guardBShellLaunchAccess() {
+  if (!hasControlledBShellEntry()) {
+    openAShellHome()
     return false
   }
 
@@ -91,7 +96,6 @@ function wrapGuardedHook(hook) {
       if (this && typeof this.setData === 'function') {
         this.setData({
           __shellReady: false,
-          __ashellFallback: true,
         })
       }
       return
@@ -100,7 +104,6 @@ function wrapGuardedHook(hook) {
     if (this && typeof this.setData === 'function') {
       this.setData({
         __shellReady: true,
-        __ashellFallback: false,
       })
     }
 
@@ -117,7 +120,6 @@ function createBShellPage(options) {
   pageOptions.data = Object.assign(
     {
       __shellReady: false,
-      __ashellFallback: false,
     },
     pageOptions.data || {},
   )

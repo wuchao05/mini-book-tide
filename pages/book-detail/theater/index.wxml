@@ -1,4 +1,3 @@
-<ashell-fallback wx:if="{{__ashellFallback}}" />
 <view wx:if="{{__shellReady}}" class="theater-page {{showResumeCard ? 'theater-page--with-resume' : ''}}" style="background: {{pageBackground}};">
   <view class="theater-navbar {{platform.isWechat ? 'theater-navbar--fixed' : ''}}" style="height: {{platform.navBarTotalHeight}}px;">
     <view class="theater-navbar__inner"></view>

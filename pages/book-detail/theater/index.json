@@ -1,7 +1,6 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "ashell-fallback": "/components/ashell-fallback/index",
     "load-more": "/components/book-detail/load-more/index",
     "revenue-dialog": "/components/book-detail/revenue-dialog/index",
     "detail-tab-bar": "/components/book-detail/detail-tab-bar/index"

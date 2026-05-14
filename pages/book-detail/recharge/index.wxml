@@ -1,4 +1,3 @@
-<ashell-fallback wx:if="{{__ashellFallback}}" />
 <view wx:if="{{__shellReady}}" class="record-page">
   <empty-state
     wx:if="{{loadStatus !== 'loading' && !rechargeList.length}}"
