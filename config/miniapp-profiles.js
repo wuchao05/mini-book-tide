@@ -1,17 +1,17 @@
 const DEFAULT_PROFILE_KEY = 'dongdong';
 
 const profiles = {
-  dongdong: {
-    key: 'dongdong',
-    appId: 'wx622e9e1d616706d4',
-    appName: '洞洞助手',
-    projectName: '洞洞助手',
-    description: '洞洞助手微信小程序',
-    navigationBarTitleText: '洞洞助手',
-    sitemapDesc: '洞洞助手站点地图',
-    appIdentifier: 'dongdong_wx_miniprogram',
+  ddnl: {
+    key: 'ddnl',
+    appId: 'wxa9218c0a31498ede',
+    appName: '洞洞能力',
+    projectName: '洞洞能力',
+    description: '洞洞能力微信小程序',
+    navigationBarTitleText: '洞洞能力',
+    sitemapDesc: '洞洞能力站点地图',
+    appIdentifier: 'ddnl_wx_miniprogram',
     baseUrl: 'https://edge.penetad.com',
-    embeddedAppIdList: ['wxb6109138e25d824b'],
+    embeddedAppIdList: ['wxb6109138e25d824b', 'wxc4062af340a792a1', 'wxeebb579cc94297d6'],
     // h5PlayerUrl: 'https://splay-midnight-player-h5.yncctech.com',
     enableMockData: false,
   },

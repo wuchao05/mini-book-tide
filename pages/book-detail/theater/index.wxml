@@ -5,21 +5,7 @@
   </view>
   <view class="theater-navbar__placeholder" style="height: {{platform.navBarPlaceholderHeight}}px;"></view>
 
-  <view wx:if="{{appStore.enableH5Page && switchTabs.length}}" class="switch-bar">
-    <view class="switch-bar__inner">
-      <view
-        wx:for="{{switchTabs}}"
-        wx:key="key"
-        class="switch-item {{activeIndex === index ? 'switch-item--active' : ''}}"
-        bindtap="changeActiveIndex"
-        data-index="{{index}}"
-      >
-        {{item.text}}
-      </view>
-    </view>
-  </view>
-
-  <block wx:if="{{activeIndex === 0}}">
+  <block wx:if="{{!appStore.enableH5Page}}">
     <view wx:if="{{bannerList.length}}" class="banner-wrap">
       <swiper
         class="banner-swiper"

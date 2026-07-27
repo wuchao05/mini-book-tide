@@ -175,7 +175,7 @@ Component({
         return
       }
 
-      const success = await embeddedPayment.launchEmbeddedPayment({
+      const success = await embeddedPayment.launchConfiguredPayment({
         source: this.properties.source,
         bizType: this.properties.source === enums.PAY_SOURCE.MINE ? 'recharge' : 'unlock',
         skuItem: checkedPackage,

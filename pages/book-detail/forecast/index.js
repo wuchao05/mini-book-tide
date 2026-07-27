@@ -474,7 +474,7 @@ createBShellPage({
   },
 
   async consumeEmbeddedPaymentResult() {
-    const result = embeddedPayment.consumeMatchedReturnResult({
+    const result = await embeddedPayment.consumeMatchedReturnResult({
       source: enums.PAY_SOURCE.FORECAST,
       albumId: this.data.albumId,
     })

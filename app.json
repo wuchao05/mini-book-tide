@@ -17,7 +17,7 @@
     "pages/book-detail/forecast/index"
   ],
   "window": {
-    "navigationBarTitleText": "洞洞助手",
+    "navigationBarTitleText": "洞洞能力",
     "navigationBarBackgroundColor": "#f6f8ff",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#eef3ff",
@@ -51,7 +51,9 @@
   },
   "style": "v2",
   "embeddedAppIdList": [
-    "wxb6109138e25d824b"
+    "wxb6109138e25d824b",
+    "wxc4062af340a792a1",
+    "wxeebb579cc94297d6"
   ],
   "sitemapLocation": "sitemap.json"
 }

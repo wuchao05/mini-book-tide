@@ -23,6 +23,7 @@ const DEFAULT_CONFIG = {
   homePopupAdSwt: 0,
   ipuThreshold: 0,
   enableEmbedPayment: false,
+  embeddedPaymentChannel: '',
 }
 
 const state = {
@@ -153,6 +154,7 @@ async function initApp(identifiers) {
       homePopupAdSwt: data.home_popup_ad_swt == null ? 0 : data.home_popup_ad_swt,
       ipuThreshold: data.ipu_threshold == null ? 0 : data.ipu_threshold,
       enableEmbedPayment: Number(data.enable_embed_payment || 0) === 1,
+      embeddedPaymentChannel: data.embedded_payment_channel || '',
     })
     state.configReady = true
     emitChange()

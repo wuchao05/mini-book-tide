@@ -28,12 +28,7 @@ const THEATER_TAB = {
 };
 
 function normalizeTheaterTab(tab, enableH5Page) {
-  const nextTab = Number(tab);
-
-  if (nextTab !== THEATER_TAB.YEAR) {
-    return THEATER_TAB.FEATURED;
-  }
-
+  // 年度精选可用时，剧场首页仅展示年度精选列表。
   return enableH5Page ? THEATER_TAB.YEAR : THEATER_TAB.FEATURED;
 }
 
@@ -205,7 +200,7 @@ createBShellPage({
   },
 
   onReachBottom() {
-    if (this.data.activeIndex === 1) {
+    if (this.data.appStore.enableH5Page) {
       if (this.data.yearLoadingStatus === 'loadmore') {
         this.setData({
           yearPage: this.data.yearPage + 1,
@@ -249,12 +244,16 @@ createBShellPage({
       return;
     }
 
-    await Promise.all([
-      this.getBannerData(),
-      this.getHotData(),
-      this.getGoodData(),
-      this.getYearGoodData(),
-    ]);
+    // 先确认年度精选开关；开启后首页只保留年度精选，不再请求推荐内容。
+    await this.getYearGoodData();
+    if (appStore.state.enableH5Page) {
+      this.setData({
+        loaded: true,
+      });
+      return;
+    }
+
+    await Promise.all([this.getBannerData(), this.getHotData(), this.getGoodData()]);
 
     this.setData({
       loaded: true,

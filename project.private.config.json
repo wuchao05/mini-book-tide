@@ -1,7 +1,19 @@
 {
   "libVersion": "3.15.2",
-  "projectname": "mini-book-tide",
-  "condition": {},
+  "projectname": "洞洞能力",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/launcher/index",
+          "pathName": "pages/launcher/index",
+          "query": "account_index=ddnl_wx_miniprogram&clickid=123&promotionid=123&id=123",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  },
   "setting": {
     "urlCheck": false,
     "coverView": true,

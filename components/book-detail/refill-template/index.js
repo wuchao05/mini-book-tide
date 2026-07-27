@@ -85,7 +85,7 @@ Component({
         return
       }
 
-      const success = await embeddedPayment.launchEmbeddedPayment({
+      const success = await embeddedPayment.launchConfiguredPayment({
         source: enums.PAY_SOURCE.FORECAST,
         bizType: 'unlock',
         skuItem: item,

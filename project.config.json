@@ -1,6 +1,6 @@
 {
-  "appid": "wx622e9e1d616706d4",
-  "projectname": "洞洞助手",
+  "appid": "wxa9218c0a31498ede",
+  "projectname": "洞洞能力",
   "compileType": "miniprogram",
   "libVersion": "3.15.2",
   "setting": {
@@ -42,5 +42,5 @@
     "include": []
   },
   "editorSetting": {},
-  "description": "洞洞助手微信小程序"
+  "description": "洞洞能力微信小程序"
 }

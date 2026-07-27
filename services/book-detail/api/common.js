@@ -116,7 +116,14 @@ function getH5List(data) {
     url: '/play/h5/page/feedList',
     method: 'GET',
     data: data || { page: 1, page_size: 10 },
-  })
+  }).then((response) =>
+    Object.assign({}, response, {
+      // 调试期间强制开启 H5 页面，调用方仍按接口响应结构读取该字段。
+      data: Object.assign({}, (response && response.data) || {}, {
+        enable_h5_page: true,
+      }),
+    }),
+  )
 }
 
 function errorReport(data) {

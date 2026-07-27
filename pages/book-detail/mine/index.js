@@ -151,7 +151,7 @@ createBShellPage({
   },
 
   async consumeEmbeddedPaymentResult() {
-    const result = embeddedPayment.consumeMatchedReturnResult({
+    const result = await embeddedPayment.consumeMatchedReturnResult({
       source: enums.PAY_SOURCE.MINE,
     })
     if (!result || result.payStatus !== enums.PAY_STATUS.SUCCESS) {
